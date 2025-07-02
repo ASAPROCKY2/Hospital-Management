@@ -1,0 +1,55 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1751374488950,
+      "tag": "0000_busy_avengers",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1751449193663,
+      "tag": "0001_broken_vance_astro",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1751450084105,
+      "tag": "0002_married_wiccan",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1751450374621,
+      "tag": "0003_rapid_the_captain",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1751450450918,
+      "tag": "0004_nebulous_mattie_franklin",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1751455864736,
+      "tag": "0005_rich_cerebro",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1751456280064,
+      "tag": "0006_noisy_bulldozer",
+      "breakpoints": true
+    }
+  ]
+}
