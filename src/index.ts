@@ -1,6 +1,19 @@
-export const sum = (a: number, b: number): number => {
-    return a + b;
-}
 
-console.log(sum(2,4))
+import express from 'express';
+import user from './user/user.router';
+import doctor from './doctor/doctor.router'; // <-- import doctor routes
 
+const app = express();
+app.use(express.json()); // used to parse JSON bodies
+
+// routes
+user(app);
+doctor(app); 
+
+app.get('/', (req, res) => {
+  res.send('Hello, World!');
+});
+
+app.listen(8081, () => {
+  console.log('Server is running on http://localhost:8081');
+});

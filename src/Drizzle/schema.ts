@@ -8,8 +8,10 @@ import {
   integer,
   decimal,
   timestamp,
+  boolean,
   pgEnum,
 } from "drizzle-orm/pg-core";
+
 
 // Enums
 export const roleEnum = pgEnum("role", ["user", "admin", "doctor"]);
@@ -36,6 +38,8 @@ export const UsersTable = pgTable("users", {
   lastname: varchar("lastname", { length: 50 }).notNull(),
   email: varchar("email", { length: 100 }).notNull().unique(),
  password: varchar("password", { length: 100 }).notNull(),
+ isVerified: boolean("IsVerified").default(false),
+  verificationCode: varchar ("verification_code", { length: 10 }),
 
 
   contact_phone: varchar("contact_phone", { length: 20 }),
@@ -164,3 +168,30 @@ export const ComplaintRelations = relations(ComplaintsTable, ({ one }) => ({
     references: [AppointmentsTable.appointment_id]
   })
 }));
+
+
+// infer.types
+
+// User types
+export type TIUser = typeof UsersTable.$inferInsert;
+export type TSUser = typeof UsersTable.$inferSelect;
+
+// Doctor types
+export type TIDoctor = typeof DoctorsTable.$inferInsert;
+export type TSDoctor = typeof DoctorsTable.$inferSelect;
+
+// Appointment types
+export type TIAppointment = typeof AppointmentsTable.$inferInsert;
+export type TSAppointment = typeof AppointmentsTable.$inferSelect;
+
+// Prescription types
+export type TIPrescription = typeof PrescriptionsTable.$inferInsert;
+export type TSPrescription = typeof PrescriptionsTable.$inferSelect;
+
+// Complaint types
+export type TIComplaint = typeof ComplaintsTable.$inferInsert;
+export type TSComplaint = typeof ComplaintsTable.$inferSelect;
+
+// Payment types
+export type TIPayment = typeof PaymentsTable.$inferInsert;
+export type TSPayment = typeof PaymentsTable.$inferSelect;
