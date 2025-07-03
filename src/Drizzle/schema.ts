@@ -103,6 +103,7 @@ export const PaymentsTable = pgTable("payments", {
 export const ComplaintsTable = pgTable("complaints", {
   complaint_id: serial("complaint_id").primaryKey(),
   user_id: integer("user_id").notNull().references(() => UsersTable.user_id, { onDelete: "cascade" }),
+    doctor_id: integer("doctor_id").references(() => DoctorsTable.doctor_id, { onDelete: "set null" }),
   related_appointment_id: integer("related_appointment_id").references(() => AppointmentsTable.appointment_id, { onDelete: "set null" }),
   subject: varchar("subject", { length: 100 }).notNull(),
   description: text("description"),
@@ -166,8 +167,13 @@ export const ComplaintRelations = relations(ComplaintsTable, ({ one }) => ({
   appointment: one(AppointmentsTable, {
     fields: [ComplaintsTable.related_appointment_id],
     references: [AppointmentsTable.appointment_id]
+  }),
+  doctor: one(DoctorsTable, { 
+    fields: [ComplaintsTable.doctor_id],
+    references: [DoctorsTable.doctor_id]
   })
 }));
+
 
 
 // infer.types

@@ -1,0 +1,2 @@
+ALTER TABLE "complaints" ADD COLUMN "doctor_id" integer;--> statement-breakpoint
+ALTER TABLE "complaints" ADD CONSTRAINT "complaints_doctor_id_doctors_doctor_id_fk" FOREIGN KEY ("doctor_id") REFERENCES "public"."doctors"("doctor_id") ON DELETE set null ON UPDATE no action;
