@@ -15,27 +15,43 @@ import {
 
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { sendEmail } from "../Mailer/mailer"; 
-
+import { sendEmail } from "../Mailer/mailer";
 
 // Register a new user
 export const createUserController = async (req: Request, res: Response) => {
   try {
-    const user = req.body;
-    const hashedPassword = await bcrypt.hash(user.password, 10);
-    user.password = hashedPassword;
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      contactPhone,
+      address,
+      role = "customer"
+    } = req.body;
 
+    const hashedPassword = await bcrypt.hash(password, 10);
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-    user.verificationCode = verificationCode;
-    user.isVerified = false;
 
-    await createUserService(user);
+    const userToCreate = {
+      firstname: firstName,
+      lastname: lastName,
+      email,
+      password: hashedPassword,
+      isVerified: false,
+      verificationCode,
+      contact_phone: contactPhone,
+      address,
+      role
+    };
+
+    await createUserService(userToCreate);
 
     await sendEmail(
-      user.email,
+      email,
       "Verify your account",
-      `Hello ${user.lastname}, your verification code is: ${verificationCode}`,
-      `<h3>Hello ${user.lastname},</h3><p>Your verification code is: <strong>${verificationCode}</strong></p>`
+      `Hello ${lastName}, your verification code is: ${verificationCode}`,
+      `<h3>Hello ${lastName},</h3><p>Your verification code is: <strong>${verificationCode}</strong></p>`
     );
 
     return res.status(201).json({ message: "User created. Verification code sent to email." });
@@ -129,7 +145,7 @@ export const deleteUserByIdController = async (req: Request, res: Response) => {
   }
 };
 
-// Get user with appointments, prescriptions, and payments
+// Get user with appointments
 export const getUserWithAppointmentsController = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
