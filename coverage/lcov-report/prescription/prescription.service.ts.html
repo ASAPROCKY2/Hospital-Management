@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for doctor/doctor.service.ts</title>
+    <title>Code coverage report for prescription/prescription.service.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">doctor</a> doctor.service.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">prescription</a> prescription.service.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>27/27</span>
+                <span class='fraction'>30/30</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>20/20</span>
+                <span class='fraction'>22/22</span>
             </div>
         
             
@@ -128,7 +128,14 @@
 <a name='L63'></a><a href='#L63'>63</a>
 <a name='L64'></a><a href='#L64'>64</a>
 <a name='L65'></a><a href='#L65'>65</a>
-<a name='L66'></a><a href='#L66'>66</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -154,14 +161,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -170,14 +169,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -192,69 +186,96 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// src/doctor/doctor.service.ts
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// src/prescription/prescription.service.ts
 &nbsp;
 import { eq } from "drizzle-orm";
 import db from "../Drizzle/db";
-import { TIDoctor, DoctorsTable } from "../Drizzle/schema";
+import { PrescriptionsTable, TIPrescription } from "../Drizzle/schema";
 &nbsp;
-// Create a new doctor
-export const createDoctorService = async (doctor: TIDoctor) =&gt; {
-  await db.insert(DoctorsTable).values(doctor);
-  return "Doctor created successfully";
+// Create a new prescription
+export const createPrescriptionService = async (prescription: TIPrescription) =&gt; {
+  await db.insert(PrescriptionsTable).values(prescription);
+  return "Prescription created successfully";
 };
 &nbsp;
-// Get all doctors
-export const getAllDoctorsService = async () =&gt; {
-  return await db.query.DoctorsTable.findMany();
+// Get all prescriptions
+export const getAllPrescriptionsService = async () =&gt; {
+  return await db.query.PrescriptionsTable.findMany();
 };
 &nbsp;
-// Get doctor by ID
-export const getDoctorByIdService = async (id: number) =&gt; {
-  return await db.query.DoctorsTable.findFirst({
-    where: eq(DoctorsTable.doctor_id, id),
+// Get prescription by ID
+export const getPrescriptionByIdService = async (id: number) =&gt; {
+  return await db.query.PrescriptionsTable.findFirst({
+    where: eq(PrescriptionsTable.prescription_id, id),
   });
 };
 &nbsp;
-// Update doctor by ID
-export const updateDoctorService = async (id: number, data: Partial&lt;TIDoctor&gt;) =&gt; {
-  await db.update(DoctorsTable).set(data).where(eq(DoctorsTable.doctor_id, id));
-  return "Doctor updated successfully";
+// Update prescription by ID
+export const updatePrescriptionService = async (
+  id: number,
+  data: Partial&lt;TIPrescription&gt;
+) =&gt; {
+  await db.update(PrescriptionsTable).set(data).where(eq(PrescriptionsTable.prescription_id, id));
+  return "Prescription updated successfully";
 };
 &nbsp;
-// Delete doctor by ID
-export const deleteDoctorService = async (id: number) =&gt; {
-  await db.delete(DoctorsTable).where(eq(DoctorsTable.doctor_id, id));
-  return "Doctor deleted successfully";
+// Delete prescription by ID
+export const deletePrescriptionService = async (id: number) =&gt; {
+  await db.delete(PrescriptionsTable).where(eq(PrescriptionsTable.prescription_id, id));
+  return "Prescription deleted successfully";
 };
 &nbsp;
-// Get doctor with appointments and patients
-export const getDoctorWithAppointmentsService = async (doctorID: number) =&gt; {
-  return await db.query.DoctorsTable.findFirst({
-    where: eq(DoctorsTable.doctor_id, doctorID),
+// Get all prescriptions written by a doctor
+export const getPrescriptionsByDoctorService = async (doctorID: number) =&gt; {
+  return await db.query.PrescriptionsTable.findMany({
+    where: eq(PrescriptionsTable.doctor_id, doctorID),
     with: {
-      appointments: {
-        with: {
-          user: true,
-          prescriptions: true,
-          payments: true,
-        }
-      }
+      appointment: true,
+      patient: true
     }
   });
 };
 &nbsp;
-// Get doctor with prescriptions
-export const getDoctorWithPrescriptionsService = async (doctorID: number) =&gt; {
-  return await db.query.DoctorsTable.findFirst({
-    where: eq(DoctorsTable.doctor_id, doctorID),
+// Get all prescriptions for a patient
+export const getPrescriptionsByPatientService = async (userID: number) =&gt; {
+  return await db.query.PrescriptionsTable.findMany({
+    where: eq(PrescriptionsTable.patient_id, userID),
     with: {
-      prescriptions: {
-        with: {
-          appointment: true
-        }
-      }
+      doctor: true,
+      appointment: true
+    }
+  });
+};
+&nbsp;
+// Get full prescription details (doctor, patient, appointment)
+export const getFullPrescriptionDetailsService = async (id: number) =&gt; {
+  return await db.query.PrescriptionsTable.findFirst({
+    where: eq(PrescriptionsTable.prescription_id, id),
+    with: {
+      doctor: true,
+      patient: true,
+      appointment: true
     }
   });
 };

@@ -1,15 +1,16 @@
 import {
-  createPaymentService,
-  getAllPaymentsService,
-  getPaymentByIdService,
-  updatePaymentService,
-  deletePaymentService,
-  getPaymentsByAppointmentService,
-  getFullPaymentDetailsService
-} from "../../src/payment/payment.service";
+  createPrescriptionService,
+  getAllPrescriptionsService,
+  getPrescriptionByIdService,
+  updatePrescriptionService,
+  deletePrescriptionService,
+  getPrescriptionsByDoctorService,
+  getPrescriptionsByPatientService,
+  getFullPrescriptionDetailsService
+} from "../../src/prescription/prescription.service";
 
 import db from "../../src/Drizzle/db";
-import { PaymentsTable } from "../../src/Drizzle/schema";
+import { PrescriptionsTable } from "../../src/Drizzle/schema";
 
 jest.mock("../../src/Drizzle/db", () => {
   const mockInsert = jest.fn(() => ({
@@ -26,7 +27,7 @@ jest.mock("../../src/Drizzle/db", () => {
   }));
 
   const mockQuery = {
-    PaymentsTable: {
+    PrescriptionsTable: {
       findFirst: jest.fn(),
       findMany: jest.fn()
     }
@@ -43,101 +44,70 @@ jest.mock("../../src/Drizzle/db", () => {
   };
 });
 
-describe("Payment Service", () => {
+describe("Prescription Service", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  describe("createPaymentService", () => {
-    it("should insert a payment and return success message", async () => {
-      const payment = {
-        appointment_id: 1,
-        amount: "2500",
-        payment_status: "paid" as const
-      };
-
-      const result = await createPaymentService(payment);
-      expect(db.insert).toHaveBeenCalledWith(PaymentsTable);
-      expect(result).toBe("Payment recorded successfully");
-    });
+  it("should create a prescription", async () => {
+    const prescription = { doctor_id: 1, appointment_id: 1, patient_id: 2, drug: "Ibuprofen" };
+    const result = await createPrescriptionService(prescription);
+    expect(db.insert).toHaveBeenCalledWith(PrescriptionsTable);
+    expect(result).toBe("Prescription created successfully");
   });
 
-  describe("getAllPaymentsService", () => {
-    it("should return all payments with appointments", async () => {
-      const mockPayments = [
-        { payment_id: 1, amount: "1000", appointment: { appointment_id: 1 } }
-      ];
+  it("should return all prescriptions", async () => {
+    const mockPrescriptions = [{ prescription_id: 1, drug: "Paracetamol" }];
+    (db.query.PrescriptionsTable.findMany as jest.Mock).mockResolvedValueOnce(mockPrescriptions);
 
-      (db.query.PaymentsTable.findMany as jest.Mock).mockResolvedValueOnce(mockPayments);
-
-      const result = await getAllPaymentsService();
-      expect(result).toEqual(mockPayments);
-    });
+    const result = await getAllPrescriptionsService();
+    expect(result).toEqual(mockPrescriptions);
   });
 
-  describe("getPaymentByIdService", () => {
-    it("should return payment by ID", async () => {
-      const mockPayment = { payment_id: 1, amount: "1000", appointment: { appointment_id: 1 } };
+  it("should return a prescription by ID", async () => {
+    const mockPrescription = { prescription_id: 1, drug: "Amoxicillin" };
+    (db.query.PrescriptionsTable.findFirst as jest.Mock).mockResolvedValueOnce(mockPrescription);
 
-      (db.query.PaymentsTable.findFirst as jest.Mock).mockResolvedValueOnce(mockPayment);
-
-      const result = await getPaymentByIdService(1);
-      expect(result).toEqual(mockPayment);
-    });
+    const result = await getPrescriptionByIdService(1);
+    expect(result).toEqual(mockPrescription);
   });
 
-  describe("updatePaymentService", () => {
-    it("should update payment and return success message", async () => {
-      const mockSet = jest.fn().mockReturnThis();
-      const mockWhere = jest.fn().mockResolvedValueOnce(undefined);
-
-      (db.update as jest.Mock).mockReturnValueOnce({
-        set: mockSet,
-        where: mockWhere
-      });
-
-      const result = await updatePaymentService(1, { amount: "3000" });
-      expect(mockSet).toHaveBeenCalledWith({ amount: "3000" });
-      expect(result).toBe("Payment updated successfully");
-    });
+  it("should update a prescription", async () => {
+    const result = await updatePrescriptionService(1, { notes: "Updated notes" });
+    expect(result).toBe("Prescription updated successfully");
   });
 
-  describe("deletePaymentService", () => {
-    it("should delete payment and return success message", async () => {
-      const mockWhere = jest.fn().mockResolvedValueOnce(undefined);
-      (db.delete as jest.Mock).mockReturnValueOnce({ where: mockWhere });
-
-      const result = await deletePaymentService(1);
-      expect(result).toBe("Payment deleted successfully");
-    });
+  it("should delete a prescription", async () => {
+    const result = await deletePrescriptionService(1);
+    expect(result).toBe("Prescription deleted successfully");
   });
 
-  describe("getPaymentsByAppointmentService", () => {
-    it("should return payments for a specific appointment", async () => {
-      const mockPayments = [{ payment_id: 1, appointment_id: 2, amount: "1500" }];
+  it("should return prescriptions for a doctor", async () => {
+    const mockData = [{ prescription_id: 1, doctor_id: 1 }];
+    (db.query.PrescriptionsTable.findMany as jest.Mock).mockResolvedValueOnce(mockData);
 
-      (db.query.PaymentsTable.findMany as jest.Mock).mockResolvedValueOnce(mockPayments);
-
-      const result = await getPaymentsByAppointmentService(2);
-      expect(result).toEqual(mockPayments);
-    });
+    const result = await getPrescriptionsByDoctorService(1);
+    expect(result).toEqual(mockData);
   });
 
-  describe("getFullPaymentDetailsService", () => {
-    it("should return full payment details with user and doctor", async () => {
-      const mockDetails = {
-        payment_id: 1,
-        amount: "3000",
-        appointment: {
-          user: { user_id: 1, firstname: "John" },
-          doctor: { doctor_id: 2, name: "Dr. Jane" }
-        }
-      };
+  it("should return prescriptions for a patient", async () => {
+    const mockData = [{ prescription_id: 1, patient_id: 2 }];
+    (db.query.PrescriptionsTable.findMany as jest.Mock).mockResolvedValueOnce(mockData);
 
-      (db.query.PaymentsTable.findFirst as jest.Mock).mockResolvedValueOnce(mockDetails);
+    const result = await getPrescriptionsByPatientService(2);
+    expect(result).toEqual(mockData);
+  });
 
-      const result = await getFullPaymentDetailsService(1);
-      expect(result).toEqual(mockDetails);
-    });
+  it("should return full prescription details", async () => {
+    const mockData = {
+      prescription_id: 1,
+      doctor: { doctor_id: 1 },
+      patient: { patient_id: 2 },
+      appointment: { appointment_id: 3 }
+    };
+    (db.query.PrescriptionsTable.findFirst as jest.Mock).mockResolvedValueOnce(mockData);
+
+    const result = await getFullPrescriptionDetailsService(1);
+    expect(result).toEqual(mockData);
   });
 });
