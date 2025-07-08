@@ -38,6 +38,7 @@ export const UsersTable = pgTable("users", {
   lastname: varchar("lastname", { length: 50 }).notNull(),
   email: varchar("email", { length: 100 }).notNull().unique(),
  password: varchar("password", { length: 100 }).notNull(),
+
  isVerified: boolean("IsVerified").default(false),
   verificationCode: varchar ("verification_code", { length: 10 }),
 
@@ -91,8 +92,9 @@ export const PaymentsTable = pgTable("payments", {
   appointment_id: integer("appointment_id").notNull().references(() => AppointmentsTable.appointment_id, { onDelete: "cascade" }),
   amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
   payment_status: paymentStatusEnum("payment_status").default("pending").notNull(),
-
-
+    
+user_id: integer("user_id") 
+  .references(() => UsersTable.user_id, { onDelete: "set null" }),
   transaction_id: varchar("transaction_id", { length: 100 }),
   payment_date: date("payment_date"),
   created_at: timestamp("created_at").defaultNow(),
@@ -156,8 +158,13 @@ export const PaymentRelations = relations(PaymentsTable, ({ one }) => ({
   appointment: one(AppointmentsTable, {
     fields: [PaymentsTable.appointment_id],
     references: [AppointmentsTable.appointment_id]
+  }),
+  user: one(UsersTable, {
+    fields: [PaymentsTable.user_id],
+    references: [UsersTable.user_id]
   })
 }));
+
 
 export const ComplaintRelations = relations(ComplaintsTable, ({ one }) => ({
   user: one(UsersTable, {

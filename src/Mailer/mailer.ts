@@ -1,4 +1,7 @@
-import nodemailer from 'nodemailer';
+import dotenv from "dotenv";
+dotenv.config();
+
+import nodemailer from "nodemailer";
 
 export const sendEmail = async (
     email: string,
@@ -7,36 +10,35 @@ export const sendEmail = async (
     html: string
 ) => {
     try {
-        const transporter = nodemailer.createTransport({ //transport is used to send emails
-            host: 'smtp.gmail.com', // Gmail SMTP server - smtp in full is simple mail transfer protocol
-            port: 465, // SMTP port for Gmail -  is used to send emails
-            service: 'gmail', // Gmail service
-            secure: true, // Use SSL for secure connection  - ssl in full is secure socket layer
-            auth: { // Authentication details for the email account
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
+            service: "gmail",
+            auth: {
                 user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASSWORD
-            }
+                pass: process.env.EMAIL_PASS, // Make sure this matches your .env
+            },
         });
 
-        const mailOptions: nodemailer.SendMailOptions = { // Mail options for the email to be sent
+        const mailOptions: nodemailer.SendMailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
-            subject: subject,
+            subject,
             text: message,
-            html: html
+            html,
         };
 
-        const mailRes = await transporter.sendMail(mailOptions); // Send the email using the transporter
-        console.log('mailRes', mailRes);
+        const mailRes = await transporter.sendMail(mailOptions);
+        console.log("Email response:", mailRes);
 
-        if (mailRes.accepted.length > 0) {  // Check if the email was accepted
-            return 'Email sent successfully';
-        } else if (mailRes.rejected.length > 0) {
-            return 'Email not sent';
+        if (mailRes.accepted.length > 0) {
+            return "Email sent successfully";
         } else {
-            return 'Email server error';
+            throw new Error("Email was not accepted by the server");
         }
     } catch (error: any) {
-        return JSON.stringify(error.message, null, 500);
+        console.error("Failed to send email:", error);
+        throw new Error("Failed to send email");
     }
 };
