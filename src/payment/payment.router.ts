@@ -11,18 +11,25 @@ import {
   getFullPaymentDetailsController,
 } from "./payment.controller";
 
-const PaymentRoutes = (app: Express) => {
-  // Create a new payment
-  app.route("/payments").post(async (req, res, next) => {
-    try {
-      await createPaymentController(req, res);
-    } catch (error) {
-      next(error);
-    }
-  });
+import {
+  isAuthenticated,
+  adminRoleAuth,
+  bothRoleAuth,
+} from "../middleware/bearAuth";
 
-  // Get all payments
-  app.route("/payments").get(async (req, res, next) => {
+const PaymentRoutes = (app: Express) => {
+  // Create a new payment (admin or patient)
+ app.route("/payments").post(isAuthenticated, adminRoleAuth, async (req, res, next) => {
+  try {
+    await createPaymentController(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+  // Get all payments (admin only)
+  app.route("/payments").get(isAuthenticated, adminRoleAuth, async (req, res, next) => {
     try {
       await getAllPaymentsController(req, res);
     } catch (error) {
@@ -30,8 +37,8 @@ const PaymentRoutes = (app: Express) => {
     }
   });
 
-  // Get payment by ID
-  app.route("/payments/:id").get(async (req, res, next) => {
+  // Get payment by ID (admin or patient)
+  app.route("/payments/:id").get(isAuthenticated, bothRoleAuth, async (req, res, next) => {
     try {
       await getPaymentByIdController(req, res);
     } catch (error) {
@@ -39,8 +46,8 @@ const PaymentRoutes = (app: Express) => {
     }
   });
 
-  // Update payment by ID
-  app.route("/payments/:id").put(async (req, res, next) => {
+  // Update payment by ID (admin only)
+  app.route("/payments/:id").put(isAuthenticated, adminRoleAuth, async (req, res, next) => {
     try {
       await updatePaymentController(req, res);
     } catch (error) {
@@ -48,8 +55,8 @@ const PaymentRoutes = (app: Express) => {
     }
   });
 
-  // Delete payment by ID
-  app.route("/payments/:id").delete(async (req, res, next) => {
+  // Delete payment by ID (admin only)
+  app.route("/payments/:id").delete(isAuthenticated, adminRoleAuth, async (req, res, next) => {
     try {
       await deletePaymentController(req, res);
     } catch (error) {
@@ -57,8 +64,8 @@ const PaymentRoutes = (app: Express) => {
     }
   });
 
-  // Get payments by appointment
-  app.route("/payments/appointment/:appointmentID").get(async (req, res, next) => {
+  // Get payments by appointment (admin or patient or doctor)
+  app.route("/payments/appointment/:appointmentID").get(isAuthenticated, bothRoleAuth, async (req, res, next) => {
     try {
       await getPaymentsByAppointmentController(req, res);
     } catch (error) {
@@ -66,8 +73,8 @@ const PaymentRoutes = (app: Express) => {
     }
   });
 
-  // Get full payment details
-  app.route("/payments/full/:id").get(async (req, res, next) => {
+  // Get full payment details (admin only)
+  app.route("/payments/full/:id").get(isAuthenticated, adminRoleAuth, async (req, res, next) => {
     try {
       await getFullPaymentDetailsController(req, res);
     } catch (error) {

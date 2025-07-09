@@ -23,9 +23,9 @@ export const verifyUserService = async (email: string) => {
 };
 
 // Login a user
-export const userLoginService = async (user: TIUser) => {
+export const userLoginService = async (user: TIUser) => {    //accepts a user object of type TIUser.
   const { email } = user;
-  return await db.query.UsersTable.findFirst({
+  return await db.query.UsersTable.findFirst({ //Drizzle's query API to find the first user with a matching email
     columns: {
       user_id: true,
       firstname: true,
