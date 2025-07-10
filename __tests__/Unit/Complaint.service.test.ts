@@ -127,8 +127,21 @@ describe("Complaint Service", () => {
         appointment: { appointment_id: 7 }
       };
       (db.query.ComplaintsTable.findFirst as jest.Mock).mockResolvedValueOnce(mockComplaint);
+
       const result = await getFullComplaintDetailsService(3);
+
       expect(result).toEqual(mockComplaint);
+      // Updated to check properly without tight matching
+      expect(db.query.ComplaintsTable.findFirst).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.anything(),
+          with: {
+            user: true,
+            doctor: true,
+            appointment: true
+          }
+        })
+      );
     });
   });
 });

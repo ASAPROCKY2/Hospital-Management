@@ -102,8 +102,19 @@ export const getUserWithComplaints = async (userID: number) => {
 
 
 //Fetches all complaints in the system
+// user.service.ts
+
 export const getAllComplaintsWithDetails = async () => {
-  return await db.query.ComplaintsTable.findMany();
+  return await db.query.ComplaintsTable.findMany({
+    with: {
+      user: true,
+      appointment: {
+        with: {
+          doctor: true
+        }
+      }
+    }
+  });
 };
 
 
