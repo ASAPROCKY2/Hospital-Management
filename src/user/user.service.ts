@@ -64,16 +64,11 @@ export const getUserWithAppointments = async (userID: number) => {
   return await db.query.UsersTable.findFirst({
     where: eq(UsersTable.user_id, userID),
     with: {
-      appointments: {
-        with: {
-          doctor: true,
-          payments: true,
-          prescriptions: true
-        }
-      }
+      appointments: true
     }
   });
 };
+
 
 
 
@@ -84,15 +79,11 @@ export const getUserWithPrescriptions = async (userID: number) => {
   return await db.query.UsersTable.findFirst({
     where: eq(UsersTable.user_id, userID),
     with: {
-      prescriptions: {
-        with: {
-          doctor: true,
-          appointment: true
-        }
-      }
+      prescriptions: true
     }
   });
 };
+
 
 
 
@@ -102,30 +93,19 @@ export const getUserWithComplaints = async (userID: number) => {
   return await db.query.UsersTable.findFirst({
     where: eq(UsersTable.user_id, userID),
     with: {
-      complaints: {
-        with: {
-          appointment: true
-        }
-      }
+      complaints: true
     }
   });
 };
+
 
 
 
 //Fetches all complaints in the system
 export const getAllComplaintsWithDetails = async () => {
-  return await db.query.ComplaintsTable.findMany({
-    with: {
-      user: true,
-      appointment: {
-        with: {
-          doctor: true
-        }
-      }
-    }
-  });
+  return await db.query.ComplaintsTable.findMany();
 };
+
 
 
 
@@ -134,11 +114,13 @@ export const getUserWithPayments = async (userID: number) => {
   return await db.query.UsersTable.findFirst({
     where: eq(UsersTable.user_id, userID),
     with: {
+  
       appointments: {
         with: {
           payments: true
         }
       }
-    }
+    },
   });
 };
+

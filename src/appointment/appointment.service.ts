@@ -52,23 +52,14 @@ export const deleteAppointmentService = async (id: number) => {
 // Get appointments by doctor ID
 export const getAppointmentsByDoctorService = async (doctorID: number) => {
   return await db.query.AppointmentsTable.findMany({
-    where: eq(AppointmentsTable.doctor_id, doctorID),
-    with: {
-      user: true,
-      prescriptions: true,
-      payments: true
-    }
+    where: eq(AppointmentsTable.doctor_id, doctorID)
   });
 };
+
 
 // Get appointments by user ID
 export const getAppointmentsByUserService = async (userID: number) => {
   return await db.query.AppointmentsTable.findMany({
-    where: eq(AppointmentsTable.user_id, userID),
-    with: {
-      doctor: true,
-      prescriptions: true,
-      payments: true
-    }
+    where: eq(AppointmentsTable.user_id, userID)
   });
 };

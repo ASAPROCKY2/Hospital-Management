@@ -39,16 +39,11 @@ export const getDoctorWithAppointmentsService = async (doctorID: number) => {
   return await db.query.DoctorsTable.findFirst({
     where: eq(DoctorsTable.doctor_id, doctorID),
     with: {
-      appointments: {
-        with: {
-          user: true,
-          prescriptions: true,
-          payments: true,
-        }
-      }
+      appointments: true
     }
   });
 };
+
 
 // Get doctor with prescriptions
 export const getDoctorWithPrescriptionsService = async (doctorID: number) => {

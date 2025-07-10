@@ -16,7 +16,7 @@ import {
 import db from "../../src/Drizzle/db";
 import { UsersTable } from "../../src/Drizzle/schema";
 
-jest.mock("../../src/Drizzle/db", () => {
+jest.mock("../../src/Drizzle/db", () => { //replace the real database module with a mock version
   const mockInsert = jest.fn(() => ({
     values: jest.fn().mockResolvedValueOnce(undefined)
   }));
