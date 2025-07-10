@@ -22,7 +22,7 @@ jest.mock("../../src/Drizzle/db", () => { //replace the real database module wit
   }));
 
   const mockUpdate = jest.fn(() => ({
-    set: jest.fn().mockReturnThis(),
+    set: jest.fn().mockReturnThis(),//make fake set function that let you continue chaining other functions  
     where: jest.fn().mockResolvedValueOnce(undefined)
   }));
 
@@ -33,7 +33,7 @@ jest.mock("../../src/Drizzle/db", () => { //replace the real database module wit
   const mockQuery = {
     UsersTable: {
       findFirst: jest.fn(),
-      findMany: jest.fn()
+      findMany: jest.fn() 
     },
     ComplaintsTable: {
       findMany: jest.fn()
@@ -76,7 +76,7 @@ describe("User Service", () => {
 
   //test getUserByEmailService
 
-  describe("getUserByEmailService", () => {
+  describe("getUserByEmailService", () => { //group of tests that are related to the createUSERService
   it("should return user by email if found", async () => {
     const mockUser = {
       user_id: 1,
@@ -85,7 +85,7 @@ describe("User Service", () => {
       email: "test@mail.com",
       password: "hashed",
       role: "user"
-    };
+    }; 
 
     (db.query.UsersTable.findFirst as jest.Mock).mockResolvedValueOnce(mockUser);
 
