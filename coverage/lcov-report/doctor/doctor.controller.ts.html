@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for appointment/appointment.controller.ts</title>
+    <title>Code coverage report for doctor/doctor.controller.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,20 +19,20 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">appointment</a> appointment.controller.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">doctor</a> doctor.controller.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">96.96% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>62/62</span>
+                <span class='fraction'>64/66</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>12/12</span>
+                <span class='fraction'>14/16</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>49/49</span>
+                <span class='fraction'>51/51</span>
             </div>
         
             
@@ -165,7 +165,11 @@
 <a name='L100'></a><a href='#L100'>100</a>
 <a name='L101'></a><a href='#L101'>101</a>
 <a name='L102'></a><a href='#L102'>102</a>
-<a name='L103'></a><a href='#L103'>103</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -248,7 +252,9 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -261,110 +267,116 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// src/appointment/appointment.controller.ts
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// src/doctor/doctor.controller.ts
 &nbsp;
 import { Request, Response } from "express";
 import {
-  createAppointmentService,
-  getAllAppointmentsService,
-  getAppointmentByIdService,
-  updateAppointmentService,
-  deleteAppointmentService,
-  getAppointmentsByDoctorService,
-  getAppointmentsByUserService,
-} from "./appointment.service";
+  createDoctorService,
+  getAllDoctorsService,
+  getDoctorByIdService,
+  updateDoctorService,
+  deleteDoctorService,
+  getDoctorWithAppointmentsService,
+  getDoctorWithPrescriptionsService
+} from "./doctor.service";
 &nbsp;
-// Create a new appointment
-export const createAppointmentController = async (req: Request, res: Response) =&gt; {
+// Create a new doctor
+export const createDoctorController = async (req: Request, res: Response) =&gt; {
   try {
-    const appointment = req.body;
-    const result = await createAppointmentService(appointment);
+    const doctor = req.body;
+    const result = await createDoctorService(doctor);
     return res.status(201).json({ message: result });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }
 };
 &nbsp;
-// Get all appointments
-export const getAllAppointmentsController = async (_req: Request, res: Response) =&gt; {
+// Get all doctors
+export const getAllDoctorsController = async (_req: Request, res: Response) =&gt; {
   try {
-    const appointments = await getAllAppointmentsService();
-    return res.status(200).json({ data: appointments });
+    const doctors = await getAllDoctorsService();
+    return res.status(200).json({ data: doctors });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }
 };
 &nbsp;
-// Get appointment by ID
-export const getAppointmentByIdController = async (req: Request, res: Response) =&gt; {
+// Get doctor by ID
+export const getDoctorByIdController = async (req: Request, res: Response) =&gt; {
   try {
     const id = parseInt(req.params.id);
-    if (isNaN(id)) return res.status(400).json({ message: "Invalid appointment ID" });
+    if (isNaN(id)) return res.status(400).json({ message: "Invalid doctor ID" });
 &nbsp;
-    const appointment = await getAppointmentByIdService(id);
-    if (!appointment) return res.status(404).json({ message: "Appointment not found" });
+    const doctor = await getDoctorByIdService(id);
+    if (!doctor) return res.status(404).json({ message: "Doctor not found" });
 &nbsp;
-    return res.status(200).json({ data: appointment });
+    return res.status(200).json({ data: doctor });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }
 };
 &nbsp;
-// Update appointment
-export const updateAppointmentController = async (req: Request, res: Response) =&gt; {
+// Update doctor by ID
+export const updateDoctorController = async (req: Request, res: Response) =&gt; {
   try {
     const id = parseInt(req.params.id);
     const updates = req.body;
 &nbsp;
-    if (isNaN(id)) return res.status(400).json({ message: "Invalid appointment ID" });
+    if (isNaN(id)) return res.status(400).json({ message: "Invalid doctor ID" });
 &nbsp;
-    const result = await updateAppointmentService(id, updates);
+    const result = await updateDoctorService(id, updates);
     return res.status(200).json({ message: result });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }
 };
 &nbsp;
-// Delete appointment
-export const deleteAppointmentController = async (req: Request, res: Response) =&gt; {
+// Delete doctor by ID
+export const deleteDoctorController = async (req: Request, res: Response) =&gt; {
   try {
     const id = parseInt(req.params.id);
-    if (isNaN(id)) return res.status(400).json({ message: "Invalid appointment ID" });
+    if (isNaN(id)) return res.status(400).json({ message: "Invalid doctor ID" });
 &nbsp;
-    const result = await deleteAppointmentService(id);
+    const result = await deleteDoctorService(id);
     return res.status(200).json({ message: result });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }
 };
 &nbsp;
-// Get appointments by doctor ID
-export const getAppointmentsByDoctorController = async (req: Request, res: Response) =&gt; {
+// Get doctor with full appointment info
+export const getDoctorWithAppointmentsController = async (req: Request, res: Response) =&gt; {
   try {
     const doctorID = parseInt(req.params.id);
-    if (isNaN(doctorID)) return res.status(400).json({ message: "Invalid doctor ID" });
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (isNaN(doctorID)) <span class="cstat-no" title="statement not covered" >return res.status(400).json({ message: "Invalid doctor ID" });</span>
 &nbsp;
-    const appointments = await getAppointmentsByDoctorService(doctorID);
-    return res.status(200).json({ data: appointments });
+    const doctor = await getDoctorWithAppointmentsService(doctorID);
+    if (!doctor) return res.status(404).json({ message: "Doctor not found" });
+&nbsp;
+    return res.status(200).json({ data: doctor });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }
 };
 &nbsp;
-// Get appointments by user ID
-export const getAppointmentsByUserController = async (req: Request, res: Response) =&gt; {
+// Get doctor with prescription info
+export const getDoctorWithPrescriptionsController = async (req: Request, res: Response) =&gt; {
   try {
-    const userID = parseInt(req.params.id);
-    if (isNaN(userID)) return res.status(400).json({ message: "Invalid user ID" });
+    const doctorID = parseInt(req.params.id);
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (isNaN(doctorID)) <span class="cstat-no" title="statement not covered" >return res.status(400).json({ message: "Invalid doctor ID" });</span>
 &nbsp;
-    const appointments = await getAppointmentsByUserService(userID);
-    return res.status(200).json({ data: appointments });
+    const doctor = await getDoctorWithPrescriptionsService(doctorID);
+    if (!doctor) return res.status(404).json({ message: "Doctor not found" });
+&nbsp;
+    return res.status(200).json({ data: doctor });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }
@@ -376,7 +388,7 @@ export const getAppointmentsByUserController = async (req: Request, res: Respons
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-07-13T07:37:43.266Z
+                at 2025-07-11T21:36:58.603Z
             </div>
         <script src="../prettify.js"></script>
         <script>

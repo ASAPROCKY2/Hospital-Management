@@ -10,7 +10,20 @@
     "generate": "drizzle-kit generate",
     "migrate": "tsx src/drizzle/migrate.ts",
     "seed": "tsx src/Drizzle/seed.ts",
-    "test": "jest"
+    "test": "jest",
+    "smoke:Login": "k6 run Load-tests/smoke/login.smoke.ts",
+    "smoke:Register": "k6 run Load-tests/smoke/register.smoke.ts",
+    "smoke:Users": "k6 run Load-tests/smoke/users.smoke.ts",
+    "smoke:Doctors": "k6 run Load-tests/smoke/doctors.smoke.ts",
+    "smoke:Appointments": "k6 run Load-tests/smoke/appointments.smoke.ts",
+    "smoke:Payments": "k6 run Load-tests/smoke/payments.smoke.ts",
+    "load:Doctors": "k6 run Load-tests/load/doctors.get.load.ts",
+    "load:Appointments": "k6 run Load-tests/load/appointment.get.load.ts",
+    "load:Complaints": "k6 run Load-tests/load/complaint.get.load.ts",
+    "load:Prescriptions": "k6 run Load-tests/load/prescriptions.get.load.ts",
+    "load:Users": "k6 run Load-tests/load/users.get.load.ts",
+    "load:Payments": "k6 run Load-tests/load/payments.get.load.ts"
+    
   },
   "keywords": [],
   "author": "",
@@ -21,6 +34,7 @@
     "@types/express": "^5.0.3",
     "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/k6": "^1.1.1",
     "@types/nodemailer": "^6.4.17",
     "@types/pg": "^8.15.4",
     "@types/supertest": "^6.0.3",
@@ -38,6 +52,7 @@
     "drizzle-orm": "^0.44.2",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "k6": "^0.0.0",
     "nodemailer": "^7.0.4",
     "pg": "^8.16.3"
   }

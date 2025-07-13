@@ -47,18 +47,22 @@ export const createUserController = async (req: Request, res: Response) => {
 
     await createUserService(userToCreate);
 
-    await sendEmail(
-      email,
-      "Verify your account",
-      `Hello ${lastName}, your verification code is: ${verificationCode}`,
-      `<h3>Hello ${lastName},</h3><p>Your verification code is: <strong>${verificationCode}</strong></p>`
-    );
+    // ✅ Only send email if not running in test mode
+    if (process.env.NODE_ENV !== "test") {
+      await sendEmail(
+        email,
+        "Verify your account",
+        `Hello ${lastName}, your verification code is: ${verificationCode}`,
+        `<h3>Hello ${lastName},</h3><p>Your verification code is: <strong>${verificationCode}</strong></p>`
+      );
+    }
 
     return res.status(201).json({ message: "User created. Verification code sent to email." });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }
 };
+
 
 // Login
 export const userLoginController = async (req: Request, res: Response) => {
