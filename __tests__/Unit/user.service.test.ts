@@ -20,7 +20,7 @@ import { UsersTable } from "../../src/Drizzle/schema";
 jest.mock("../../src/Drizzle/db", () => {
   const mockFindFirst = jest.fn();
   const mockFindMany = jest.fn();
-  //stimulate the findFirst and findMany methods
+  
 
   return {
     __esModule: true,
@@ -43,7 +43,7 @@ jest.mock("../../src/Drizzle/db", () => {
         ComplaintsTable: {
           findMany: mockFindMany
         }
-      }
+      } 
     }
   };
 });

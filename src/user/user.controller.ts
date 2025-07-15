@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import {
   createUserService,
+  getUserByEmailService,
   verifyUserService,
   userLoginService,
   getUsersService,
@@ -30,6 +31,12 @@ export const createUserController = async (req: Request, res: Response) => {
       role = "customer"
     } = req.body;
 
+    // ✅ Check if the user already exists by email
+    const existingUser = await getUserByEmailService(email);
+    if (existingUser) {
+      return res.status(409).json({ message: "Email is already in use" });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -47,7 +54,6 @@ export const createUserController = async (req: Request, res: Response) => {
 
     await createUserService(userToCreate);
 
-    // ✅ Only send email if not running in test mode
     if (process.env.NODE_ENV !== "test") {
       await sendEmail(
         email,
@@ -62,7 +68,6 @@ export const createUserController = async (req: Request, res: Response) => {
     return res.status(500).json({ error: err.message });
   }
 };
-
 
 // Login
 export const userLoginController = async (req: Request, res: Response) => {

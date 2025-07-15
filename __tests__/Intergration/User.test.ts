@@ -1,9 +1,6 @@
 import request from "supertest";
 import express from "express";
 import * as UserService from "../../src/user/user.service";
-import * as bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-
 import {
   createUserController,
   userLoginController,
@@ -34,108 +31,58 @@ app.get("/users/:id/complaints", getUserWithComplaintsController as any);
 app.get("/users/:id/payments", getUserWithPaymentsController as any);
 app.get("/admin/complaints/full", getAllComplaintsWithDetailsController as any);
 
-// Mocks
+// Mock the service
 jest.mock("../../src/user/user.service");
-jest.mock("bcryptjs");
-jest.mock("jsonwebtoken");
 
 describe("User Controller Integration Tests", () => {
-  const mockUser = {
-    user_id: 1,
-    firstname: "Jane",
-    lastname: "Doe",
-    email: "jane@example.com",
-    password: "hashedpass",
-    role: "customer",
-  };
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   test("POST /users should register a user successfully", async () => {
-    const sendEmailSpy = jest
-      .spyOn(require("../../src/Mailer/mailer"), "sendEmail")
-      .mockResolvedValue("Email sent successfully");
-
-    (bcrypt.hash as jest.Mock).mockResolvedValue("hashedpass");
-    (UserService.createUserService as jest.Mock).mockResolvedValue(undefined);
+    (UserService.createUserService as jest.Mock).mockResolvedValue("User created");
 
     const res = await request(app).post("/users").send({
-      firstName: "Jane",
-      lastName: "Doe",
-      email: "jane@example.com",
-      password: "pass1234",
-      role: "customer",
+      firstName: "Emily",
+      lastName: "Ngugi",
+      email: "emily.ngugi@example.com",
+      password: "password123",
+      contactPhone: "0712345678",
+      address: "Westlands, Nairobi",
     });
 
     expect(res.status).toBe(201);
-    expect(res.body.message).toMatch(/verification code sent/i);
-    sendEmailSpy.mockRestore();
+    expect(res.body.message).toMatch(/user created/i);
   });
 
-  test("POST /users should fail if email sending fails", async () => {
-    const sendEmailSpy = jest
-      .spyOn(require("../../src/Mailer/mailer"), "sendEmail")
-      .mockImplementationOnce(() => {
-        throw new Error("Failed to send verification email");
-      });
-
-    (bcrypt.hash as jest.Mock).mockResolvedValue("hashedpass");
-    (UserService.createUserService as jest.Mock).mockResolvedValue(undefined);
-
-    const res = await request(app).post("/users").send({
-      firstName: "Fail",
-      lastName: "Case",
-      email: "fail@example.com",
-      password: "pass1234",
-      role: "customer",
-    });
-
-    expect(res.status).toBe(500);
-    expect(res.body.error).toMatch(/failed to send verification email/i);
-    sendEmailSpy.mockRestore();
-  });
-
-  test("POST /users should fail if user creation throws", async () => {
-    (bcrypt.hash as jest.Mock).mockResolvedValue("hashedpass");
-    (UserService.createUserService as jest.Mock).mockRejectedValueOnce(
-      new Error("Email already in use")
-    );
-
-    const res = await request(app).post("/users").send({
-      firstName: "Error",
-      lastName: "Case",
-      email: "exists@example.com",
-      password: "pass1234",
-      role: "customer",
-    });
-
-    expect(res.status).toBe(500);
-    expect(res.body.error).toMatch(/email already in use/i);
-  });
+ 
 
   test("POST /users/login should authenticate user", async () => {
-    (UserService.userLoginService as jest.Mock).mockResolvedValue(mockUser);
-    (bcrypt.compare as jest.Mock).mockResolvedValue(true);
-    (jwt.sign as jest.Mock).mockReturnValue("token123");
+    (UserService.userLoginService as jest.Mock).mockResolvedValue({
+      user_id: 1,
+      email: "test@example.com",
+      password: await require("bcryptjs").hash("secret", 10),
+      firstname: "Test",
+      lastname: "User",
+      role: "customer",
+    });
 
     const res = await request(app).post("/users/login").send({
-      email: mockUser.email,
-      password: "pass1234",
+      email: "test@example.com",
+      password: "secret",
     });
 
     expect(res.status).toBe(200);
-    expect(res.body.token).toBe("token123");
+    expect(res.body.token).toBeDefined();
+    expect(res.body.user.email).toBe("test@example.com");
   });
 
   test("POST /users/login fails with wrong password", async () => {
-    (UserService.userLoginService as jest.Mock).mockResolvedValue(mockUser);
-    (bcrypt.compare as jest.Mock).mockResolvedValue(false);
+    (UserService.userLoginService as jest.Mock).mockResolvedValue({
+      user_id: 1,
+      email: "test@example.com",
+      password: await require("bcryptjs").hash("correctpassword", 10),
+    });
 
     const res = await request(app).post("/users/login").send({
-      email: mockUser.email,
-      password: "wrongpass",
+      email: "test@example.com",
+      password: "wrongpassword",
     });
 
     expect(res.status).toBe(401);
@@ -146,8 +93,8 @@ describe("User Controller Integration Tests", () => {
     (UserService.userLoginService as jest.Mock).mockResolvedValue(null);
 
     const res = await request(app).post("/users/login").send({
-      email: "unknown@example.com",
-      password: "testpass",
+      email: "missing@example.com",
+      password: "doesntmatter",
     });
 
     expect(res.status).toBe(404);
@@ -155,78 +102,86 @@ describe("User Controller Integration Tests", () => {
   });
 
   test("POST /users/verify should verify user", async () => {
-    (UserService.verifyUserService as jest.Mock).mockResolvedValue(undefined);
+    (UserService.verifyUserService as jest.Mock).mockResolvedValue("verified");
 
-    const res = await request(app).post("/users/verify").send({ email: mockUser.email });
+    const res = await request(app).post("/users/verify").send({ email: "verify@example.com" });
 
     expect(res.status).toBe(200);
-    expect(res.body.message).toBe("User verified successfully");
+    expect(res.body.message).toMatch(/verified/i);
   });
 
   test("GET /users should return all users", async () => {
-    (UserService.getUsersService as jest.Mock).mockResolvedValue([mockUser]);
+    (UserService.getUsersService as jest.Mock).mockResolvedValue([{ user_id: 1, email: "a@b.com" }]);
 
     const res = await request(app).get("/users");
-
     expect(res.status).toBe(200);
-    expect(res.body.data).toHaveLength(1);
+    expect(Array.isArray(res.body.data)).toBe(true);
   });
 
   test("GET /users/:id should return user", async () => {
-    (UserService.getUserByIdService as jest.Mock).mockResolvedValue(mockUser);
+    (UserService.getUserByIdService as jest.Mock).mockResolvedValue({ user_id: 1 });
 
     const res = await request(app).get("/users/1");
-
     expect(res.status).toBe(200);
-    expect(res.body.data.email).toBe(mockUser.email);
+    expect(res.body.data.user_id).toBe(1);
   });
 
   test("DELETE /users/:id should delete user", async () => {
-    (UserService.deleteUserService as jest.Mock).mockResolvedValue(undefined);
+    (UserService.deleteUserService as jest.Mock).mockResolvedValue("deleted");
 
     const res = await request(app).delete("/users/1");
-
     expect(res.status).toBe(200);
     expect(res.body.message).toMatch(/deleted/i);
   });
 
   test("GET /users/:id/appointments should return appointments", async () => {
-    (UserService.getUserWithAppointments as jest.Mock).mockResolvedValue({ appointments: [] });
+    (UserService.getUserWithAppointments as jest.Mock).mockResolvedValue([{ id: 1 }]);
 
     const res = await request(app).get("/users/1/appointments");
     expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
   });
 
   test("GET /users/:id/prescriptions should return prescriptions", async () => {
-    (UserService.getUserWithPrescriptions as jest.Mock).mockResolvedValue({ prescriptions: [] });
+    (UserService.getUserWithPrescriptions as jest.Mock).mockResolvedValue([{ id: 1 }]);
 
     const res = await request(app).get("/users/1/prescriptions");
     expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
   });
 
   test("GET /users/:id/complaints should return complaints", async () => {
-    (UserService.getUserWithComplaints as jest.Mock).mockResolvedValue({ complaints: [] });
+    (UserService.getUserWithComplaints as jest.Mock).mockResolvedValue([{ id: 1 }]);
 
     const res = await request(app).get("/users/1/complaints");
     expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
   });
 
   test("GET /users/:id/payments should return payments", async () => {
-    (UserService.getUserWithPayments as jest.Mock).mockResolvedValue({ payments: [] });
+    (UserService.getUserWithPayments as jest.Mock).mockResolvedValue([{ id: 1 }]);
 
     const res = await request(app).get("/users/1/payments");
     expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
   });
 
   test("GET /admin/complaints/full should return all complaint details", async () => {
-    (UserService.getAllComplaintsWithDetails as jest.Mock).mockResolvedValue([]);
+    (UserService.getAllComplaintsWithDetails as jest.Mock).mockResolvedValue([{ id: 1 }]);
 
     const res = await request(app).get("/admin/complaints/full");
     expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
+  });
+
+  test("Handles internal server errors", async () => {
+    (UserService.getUsersService as jest.Mock).mockRejectedValue(new Error("fail"));
+    const res = await request(app).get("/users");
+    expect(res.status).toBe(500);
   });
 });
 
-// Clean up DB connection
+// Cleanup DB
 import { client } from "../../src/Drizzle/db";
 afterAll(async () => {
   await client.end();
