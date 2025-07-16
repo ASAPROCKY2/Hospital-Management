@@ -25,7 +25,7 @@ export default function () {
         },
     });
 
-    check(res, {
+    const ok = check(res, {
         'status is 200': (r) => r.status === 200,
         'has data array': (r) => {
             try {
@@ -36,6 +36,14 @@ export default function () {
             }
         },
     });
+
+    // 
+    if (!ok) {
+        console.error('❌ Unexpected response detected:', {
+            status: res.status,
+            body: res.body, // raw response body
+        });
+    }
 
     sleep(1);
 }

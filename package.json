@@ -13,34 +13,45 @@
     "test": "jest",
     "smoke:Login": "k6 run Load-tests/smoke/login.smoke.ts",
     "smoke:Register": "k6 run Load-tests/smoke/register.smoke.ts",
-    "smoke:Users": "k6 run Load-tests/smoke/users.smoke.ts",
-    "smoke:Doctors": "k6 run Load-tests/smoke/doctors.smoke.ts",
-    "smoke:Appointments": "k6 run Load-tests/smoke/appointments.smoke.ts",
-    "smoke:Payments": "k6 run Load-tests/smoke/payments.smoke.ts",
+    "smoke:Users": "k6 run Load-tests/smoke/users.get.smoke.ts",
+    "smoke:Doctors": "k6 run Load-tests/smoke/doctors.get.smoke.ts",
+    "smoke:Appointments": "k6 run Load-tests/smoke/appointments.get.smoke.ts",
+    "smoke:Payments": "k6 run Load-tests/smoke/payments.get.smoke.ts",
+    "smoke:Complaints": "k6 run Load-tests/smoke/complaints.get.smoke.ts",
+    "smoke:Prescriptions": "k6 run Load-tests/smoke/prescription.get.smoke.ts",
+    
     "load:Doctors": "k6 run Load-tests/load/doctors.get.load.ts",
+
     "load:Appointments": "k6 run Load-tests/load/appointment.get.load.ts",
+
     "load:Complaints": "k6 run Load-tests/load/complaint.get.load.ts",
     "load:Prescriptions": "k6 run Load-tests/load/prescriptions.get.load.ts",
     "load:Users": "k6 run Load-tests/load/users.get.load.ts",
     "load:Payments": "k6 run Load-tests/load/payments.get.load.ts",
+    
     "stress:Appointments": "k6 run Load-tests/stress/appointment.get.stress.ts",
     "stress:Doctors": "k6 run Load-tests/stress/doctors.get.stress.ts",
-    "stress:Complaints": "k6 run Load-tests/stress/complaint.get.stress.ts",
-    "stress:Prescriptions": "k6 run Load-tests/stress/prescription.get.stress.ts",
     "stress:Users": "k6 run Load-tests/stress/users.get.stress.ts",
+
+    "stress:Complaints" : "k6 run Load-tests/stress/complaint.get.stress.ts",
+
+   
     "stress:Payments": "k6 run Load-tests/stress/payment.get.stress.ts",
+    
     "spike:Doctors": "k6 run Load-tests/spike/doctors.get.spike.ts",
     "spike:Appointments": "k6 run Load-tests/spike/appointment.get.spike.ts",
     "spike:Complaints": "k6 run Load-tests/spike/complaint.get.spike.ts",
     "spike:Prescriptions": "k6 run Load-tests/spike/prescription.get.spike.ts",
-    "spike:Users": "k6 run Load-tests/spike/users.get.spike.ts",
+    
     "spike:Payments": "k6 run Load-tests/spike/payments.get.spike.ts",
+    
     "soak:Doctors": "k6 run Load-tests/soak/doctors.get.soak.ts",
     "soak:Appointments": "k6 run Load-tests/soak/appointment.get.soak.ts",
     "soak:Complaints": "k6 run Load-tests/soak/complaint.get.soak.ts",
     "soak:Users": "k6 run Load-tests/soak/users.get.soak.ts",
     "soak:Prescriptions": "k6 run Load-tests/soak/prescription.get.soak.ts",
     "soak:Payments": "k6 run Load-tests/soak/payment.get.soak.ts",
+    
     "breakpoint:Doctors": "k6 run Load-tests/breakpoint/doctors.get.breakpoint.ts",
     "breakpoint:Appointments": "k6 run Load-tests/breakpoint/appointment.get.breakpoint.ts",
     "breakpoint:Complaints": "k6 run Load-tests/breakpoint/complaint.get.breakpoint.ts",
@@ -56,6 +67,7 @@
   "packageManager": "pnpm@10.11.0",
   "devDependencies": {
     "@types/bcryptjs": "^3.0.0",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.10",
@@ -73,7 +85,9 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
+    "@reduxjs/toolkit": "^2.8.2",
     "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
     "dotenv": "^17.0.0",
     "drizzle-orm": "^0.44.2",
     "express": "^5.1.0",

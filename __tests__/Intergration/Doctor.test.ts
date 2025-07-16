@@ -4,6 +4,7 @@ import * as UserService from "../../src/user/user.service";
 import * as Mailer from "../../src/Mailer/mailer";
 import * as bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+
 import {
   createUserController,
   userLoginController,
@@ -15,11 +16,13 @@ import {
   getUserWithPrescriptionsController,
   getUserWithComplaintsController,
   getUserWithPaymentsController,
-  getAllComplaintsWithDetailsController
+  getAllComplaintsWithDetailsController,
 } from "../../src/user/user.controller";
 
 const app = express();
 app.use(express.json());
+
+// Routes setup for tests
 app.post("/users", createUserController as any);
 app.post("/users/login", userLoginController as any);
 app.post("/users/verify", verifyUserController as any);
@@ -32,6 +35,7 @@ app.get("/users/:id/complaints", getUserWithComplaintsController as any);
 app.get("/users/:id/payments", getUserWithPaymentsController as any);
 app.get("/admin/complaints/full", getAllComplaintsWithDetailsController as any);
 
+// Mock dependencies
 jest.mock("../../src/user/user.service");
 jest.mock("../../src/Mailer/mailer");
 jest.mock("bcryptjs");
@@ -44,7 +48,7 @@ describe("User Controller Integration Tests", () => {
     lastname: "Doe",
     email: "jane@example.com",
     password: "hashedpass",
-    role: "customer",
+    role: "patient",
   };
 
   test("POST /users should register a user successfully", async () => {
@@ -57,7 +61,7 @@ describe("User Controller Integration Tests", () => {
       lastName: "Doe",
       email: "jane@example.com",
       password: "pass1234",
-      role: "customer"
+      role: "customer",
     });
 
     expect(res.status).toBe(201);
@@ -65,9 +69,11 @@ describe("User Controller Integration Tests", () => {
   });
 
   test("POST /users should fail if user creation throws", async () => {
-    const spy = jest.spyOn(UserService, "createUserService").mockImplementation(() => {
-      throw new Error("Email already in use");
-    });
+    const spy = jest
+      .spyOn(UserService, "createUserService")
+      .mockImplementation(() => {
+        throw new Error("Email already in use");
+      });
 
     const res = await request(app).post("/users").send({
       firstName: "Jane",
@@ -88,7 +94,7 @@ describe("User Controller Integration Tests", () => {
 
     const res = await request(app).post("/users/login").send({
       email: mockUser.email,
-      password: "pass1234"
+      password: "pass1234",
     });
 
     expect(res.status).toBe(200);
@@ -101,7 +107,7 @@ describe("User Controller Integration Tests", () => {
 
     const res = await request(app).post("/users/login").send({
       email: mockUser.email,
-      password: "wrongpass"
+      password: "wrongpass",
     });
 
     expect(res.status).toBe(401);
@@ -113,7 +119,7 @@ describe("User Controller Integration Tests", () => {
 
     const res = await request(app).post("/users/login").send({
       email: "notfound@example.com",
-      password: "pass1234"
+      password: "pass1234",
     });
 
     expect(res.status).toBe(404);
@@ -123,7 +129,9 @@ describe("User Controller Integration Tests", () => {
   test("POST /users/verify should verify user", async () => {
     (UserService.verifyUserService as jest.Mock).mockResolvedValue(undefined);
 
-    const res = await request(app).post("/users/verify").send({ email: mockUser.email });
+    const res = await request(app)
+      .post("/users/verify")
+      .send({ email: mockUser.email });
 
     expect(res.status).toBe(200);
     expect(res.body.message).toBe("User verified successfully");
@@ -157,28 +165,36 @@ describe("User Controller Integration Tests", () => {
   });
 
   test("GET /users/:id/appointments should return appointments", async () => {
-    (UserService.getUserWithAppointments as jest.Mock).mockResolvedValue({ appointments: [] });
+    (UserService.getUserWithAppointments as jest.Mock).mockResolvedValue({
+      appointments: [],
+    });
 
     const res = await request(app).get("/users/1/appointments");
     expect(res.status).toBe(200);
   });
 
   test("GET /users/:id/prescriptions should return prescriptions", async () => {
-    (UserService.getUserWithPrescriptions as jest.Mock).mockResolvedValue({ prescriptions: [] });
+    (UserService.getUserWithPrescriptions as jest.Mock).mockResolvedValue({
+      prescriptions: [],
+    });
 
     const res = await request(app).get("/users/1/prescriptions");
     expect(res.status).toBe(200);
   });
 
   test("GET /users/:id/complaints should return complaints", async () => {
-    (UserService.getUserWithComplaints as jest.Mock).mockResolvedValue({ complaints: [] });
+    (UserService.getUserWithComplaints as jest.Mock).mockResolvedValue({
+      complaints: [],
+    });
 
     const res = await request(app).get("/users/1/complaints");
     expect(res.status).toBe(200);
   });
 
   test("GET /users/:id/payments should return payments", async () => {
-    (UserService.getUserWithPayments as jest.Mock).mockResolvedValue({ payments: [] });
+    (UserService.getUserWithPayments as jest.Mock).mockResolvedValue({
+      payments: [],
+    });
 
     const res = await request(app).get("/users/1/payments");
     expect(res.status).toBe(200);
@@ -192,8 +208,10 @@ describe("User Controller Integration Tests", () => {
   });
 });
 
+//  Clean up after tests
 import { client } from "../../src/Drizzle/db";
+
 afterAll(async () => {
   jest.clearAllMocks();
-  await client.end();
+  
 });

@@ -10,8 +10,8 @@ export const options = {
 export default function () {
     const url = 'http://localhost:8081/auth/login'; // update if your port or route is different
     const payload = JSON.stringify({
-        email: 'Jinwoo@gmail.com',
-        password: 'SecurePass123!',
+        email: 'asaproc16@gmail.com',
+        password: '111111',
     });
 
     const params = {

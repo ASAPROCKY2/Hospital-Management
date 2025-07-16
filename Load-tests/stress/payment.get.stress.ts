@@ -3,7 +3,7 @@ import { check, sleep } from 'k6';
 
 const BASE_URL = 'http://localhost:8081';
 const TOKEN =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMywiZW1haWwiOiJKaW53b29AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzUyNDE3NDQ0LCJpYXQiOjE3NTI0MTM4NDR9.let04LB0-UW0gTMajB5rCEVfr8SUbiJFEvXH2ngY_3E';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2LCJlbWFpbCI6ImFzYXByb2MxNkBnbWFpbC5jb20iLCJyb2xlIjoiZG9jdG9yIiwiZXhwIjoxNzUyNjYzODc0LCJpYXQiOjE3NTI2NjAyNzR9._Kfxx9qYnBBQNJT9u8jPI95HIoSNdklh1DGaK54oWAs';
 
 export const options = {
   stages: [

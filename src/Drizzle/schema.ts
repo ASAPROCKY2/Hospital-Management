@@ -41,7 +41,7 @@ export const UsersTable = pgTable("users", {
 
  isVerified: boolean("IsVerified").default(false),
   verificationCode: varchar ("verification_code", { length: 10 }),
-
+  
 
   contact_phone: varchar("contact_phone", { length: 20 }),
   address: varchar("address", { length: 255 }),
