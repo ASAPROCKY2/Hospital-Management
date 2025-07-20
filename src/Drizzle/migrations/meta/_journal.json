@@ -71,6 +71,13 @@
       "when": 1752008694818,
       "tag": "0009_mushy_doomsday",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1753012027081,
+      "tag": "0010_bouncy_the_renegades",
+      "breakpoints": true
     }
   ]
 }

@@ -5,9 +5,21 @@ import { getDashboardStatsService } from "./dashboard.service";
 export const getDashboardStatsController = async (_req: Request, res: Response) => {
   try {
     const stats = await getDashboardStatsService();
-    return res.status(200).json(stats);
+
+    // Explicitly structure the response so you know exactly what’s being sent
+    return res.status(200).json({
+      patients: stats.patients,
+      doctors: stats.doctors,
+      appointments: stats.appointments,
+      revenue: stats.revenue,
+      complaints: stats.complaints,
+      prescriptions: stats.prescriptions,
+    });
   } catch (error: any) {
-    console.error(error);
-    return res.status(500).json({ error: "Failed to fetch dashboard stats" });
+    console.error("Error fetching dashboard stats:", error);
+    return res.status(500).json({
+      error: "Failed to fetch dashboard stats",
+      details: error?.message ?? "Unknown error",
+    });
   }
 };
