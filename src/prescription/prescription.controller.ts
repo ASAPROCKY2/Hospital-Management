@@ -1,5 +1,4 @@
 // src/prescription/prescription.controller.ts
-
 import { Request, Response } from "express";
 import {
   createPrescriptionService,
@@ -16,19 +15,22 @@ import {
 export const createPrescriptionController = async (req: Request, res: Response) => {
   try {
     const message = await createPrescriptionService(req.body);
-    res.status(201).json({ message });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to create prescription", details: error });
+    return res.status(201).json({ message });
+  } catch (error: any) {
+    return res.status(500).json({ error: "Failed to create prescription", details: error.message });
   }
 };
 
-// Get all prescriptions
+// Get all prescriptions (now includes doctor/patient/appointment)
 export const getAllPrescriptionsController = async (_req: Request, res: Response) => {
   try {
     const prescriptions = await getAllPrescriptionsService();
-    res.json(prescriptions);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch prescriptions", details: error });
+    return res.status(200).json({
+      count: prescriptions.length,
+      data: prescriptions,
+    });
+  } catch (error: any) {
+    return res.status(500).json({ error: "Failed to fetch prescriptions", details: error.message });
   }
 };
 
@@ -37,13 +39,12 @@ export const getPrescriptionByIdController = async (req: Request, res: Response)
   try {
     const id = Number(req.params.id);
     const prescription = await getPrescriptionByIdService(id);
-    if (prescription) {
-      res.json(prescription);
-    } else {
-      res.status(404).json({ error: "Prescription not found" });
+    if (!prescription) {
+      return res.status(404).json({ error: "Prescription not found" });
     }
-  } catch (error) {
-    res.status(500).json({ error: "Error fetching prescription", details: error });
+    return res.status(200).json({ data: prescription });
+  } catch (error: any) {
+    return res.status(500).json({ error: "Error fetching prescription", details: error.message });
   }
 };
 
@@ -52,9 +53,9 @@ export const updatePrescriptionController = async (req: Request, res: Response) 
   try {
     const id = Number(req.params.id);
     const message = await updatePrescriptionService(id, req.body);
-    res.json({ message });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to update prescription", details: error });
+    return res.status(200).json({ message });
+  } catch (error: any) {
+    return res.status(500).json({ error: "Failed to update prescription", details: error.message });
   }
 };
 
@@ -63,9 +64,9 @@ export const deletePrescriptionController = async (req: Request, res: Response) 
   try {
     const id = Number(req.params.id);
     const message = await deletePrescriptionService(id);
-    res.json({ message });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to delete prescription", details: error });
+    return res.status(200).json({ message });
+  } catch (error: any) {
+    return res.status(500).json({ error: "Failed to delete prescription", details: error.message });
   }
 };
 
@@ -74,9 +75,12 @@ export const getPrescriptionsByDoctorController = async (req: Request, res: Resp
   try {
     const doctorID = Number(req.params.doctorID);
     const prescriptions = await getPrescriptionsByDoctorService(doctorID);
-    res.json(prescriptions);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch prescriptions by doctor", details: error });
+    return res.status(200).json({
+      count: prescriptions.length,
+      data: prescriptions,
+    });
+  } catch (error: any) {
+    return res.status(500).json({ error: "Failed to fetch prescriptions by doctor", details: error.message });
   }
 };
 
@@ -85,9 +89,12 @@ export const getPrescriptionsByPatientController = async (req: Request, res: Res
   try {
     const userID = Number(req.params.userID);
     const prescriptions = await getPrescriptionsByPatientService(userID);
-    res.json(prescriptions);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch prescriptions by patient", details: error });
+    return res.status(200).json({
+      count: prescriptions.length,
+      data: prescriptions,
+    });
+  } catch (error: any) {
+    return res.status(500).json({ error: "Failed to fetch prescriptions by patient", details: error.message });
   }
 };
 
@@ -96,12 +103,11 @@ export const getFullPrescriptionDetailsController = async (req: Request, res: Re
   try {
     const id = Number(req.params.id);
     const prescription = await getFullPrescriptionDetailsService(id);
-    if (prescription) {
-      res.json(prescription);
-    } else {
-      res.status(404).json({ error: "Prescription not found" });
+    if (!prescription) {
+      return res.status(404).json({ error: "Prescription not found" });
     }
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch prescription details", details: error });
+    return res.status(200).json({ data: prescription });
+  } catch (error: any) {
+    return res.status(500).json({ error: "Failed to fetch prescription details", details: error.message });
   }
 };

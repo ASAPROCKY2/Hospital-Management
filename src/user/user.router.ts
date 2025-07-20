@@ -5,6 +5,7 @@ import {
   userLoginController,
   getUsersController,
   getUserByIdController,
+  updateUserController, // ✅ import update controller
   deleteUserByIdController,
   getUserWithAppointmentsController,
   getUserWithPrescriptionsController,
@@ -54,6 +55,15 @@ const UserRoutes = (app: Express) => {
   app.route("/users/:id").get(async (req, res, next) => {
     try {
       await getUserByIdController(req, res);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // ✅ Update user by ID
+  app.route("/users/:id").put(async (req, res, next) => {
+    try {
+      await updateUserController(req, res);
     } catch (error) {
       next(error);
     }

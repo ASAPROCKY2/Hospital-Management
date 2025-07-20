@@ -12,6 +12,7 @@ import {
   getUserWithComplaints,
   getUserWithPayments,
   getAllComplaintsWithDetails,
+  updateUserService, // ✅ import the update service
 } from "./user.service";
 
 import bcrypt from "bcryptjs";
@@ -31,12 +32,10 @@ export const createUserController = async (req: Request, res: Response) => {
       role,
     } = req.body;
 
-    //  Validate role
     if (!role || !["doctor", "user"].includes(role)) {
       return res.status(400).json({ message: "Invalid role. Must be doctor or patient." });
     }
 
-    //  Check if the user already exists
     const existingUser = await getUserByEmailService(email);
     if (existingUser) {
       return res.status(409).json({ message: "Email is already in use" });
@@ -68,9 +67,7 @@ export const createUserController = async (req: Request, res: Response) => {
       );
     }
 
-    return res
-      .status(201)
-      .json({ message: "User created. Verification code sent to email." });
+    return res.status(201).json({ message: "User created. Verification code sent to email." });
   } catch (err: any) {
     console.error("Error in createUserController:", err);
     return res.status(500).json({ error: err.message });
@@ -153,6 +150,29 @@ export const getUserByIdController = async (req: Request, res: Response) => {
     return res.status(200).json({ data: user });
   } catch (error: any) {
     console.error("Error in getUserByIdController:", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+// ✅ Update user
+export const updateUserController = async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+
+    const updates = req.body;
+
+    // If password is being updated, hash it
+    if (updates.password) {
+      updates.password = await bcrypt.hash(updates.password, 10);
+    }
+
+    await updateUserService(id, updates);
+    return res.status(200).json({ message: "User updated successfully" });
+  } catch (error: any) {
+    console.error("Error in updateUserController:", error);
     return res.status(500).json({ error: error.message });
   }
 };

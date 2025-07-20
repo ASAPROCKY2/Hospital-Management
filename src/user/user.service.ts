@@ -17,15 +17,16 @@ export const getUserByEmailService = async (email: string) => {
 
 // Verify a user
 export const verifyUserService = async (email: string) => {
-  await db.update(UsersTable)
+  await db
+    .update(UsersTable)
     .set({ isVerified: true, verificationCode: null })
     .where(sql`${UsersTable.email} = ${email}`);
 };
 
 // Login a user
-export const userLoginService = async (user: TIUser) => {    //accepts a user object of type TIUser.
+export const userLoginService = async (user: TIUser) => {
   const { email } = user;
-  return await db.query.UsersTable.findFirst({ //Drizzle's query API to find the first user with a matching email
+  return await db.query.UsersTable.findFirst({
     columns: {
       user_id: true,
       firstname: true,
@@ -43,12 +44,6 @@ export const getUsersService = async () => {
   return await db.query.UsersTable.findMany();
 };
 
-// Delete a user by ID
-export const deleteUserService = async (id: number) => {
-  await db.delete(UsersTable).where(eq(UsersTable.user_id, id));
-  return "User deleted successfully";
-};
-
 // Get a user by ID
 export const getUserByIdService = async (id: number) => {
   return await db.query.UsersTable.findFirst({
@@ -56,10 +51,26 @@ export const getUserByIdService = async (id: number) => {
   });
 };
 
+// ✅ Update a user by ID
+export const updateUserService = async (id: number, updates: Partial<TIUser>) => {
+  // ensure we add a timestamp on update
+  const allowedUpdates = { ...updates, updated_at: new Date() };
 
+  await db
+    .update(UsersTable)
+    .set(allowedUpdates)
+    .where(eq(UsersTable.user_id, id));
 
-//This pulls a user and all their appointments, including which doctor, payments, and prescriptions are linked to each.
+  return "User updated successfully";
+};
 
+// Delete a user by ID
+export const deleteUserService = async (id: number) => {
+  await db.delete(UsersTable).where(eq(UsersTable.user_id, id));
+  return "User deleted successfully";
+};
+
+// Get a user with all their appointments
 export const getUserWithAppointments = async (userID: number) => {
   return await db.query.UsersTable.findFirst({
     where: eq(UsersTable.user_id, userID),
@@ -69,12 +80,7 @@ export const getUserWithAppointments = async (userID: number) => {
   });
 };
 
-
-
-
-
-// Fetches a user along with all their prescriptions.
-
+// Get a user with all their prescriptions
 export const getUserWithPrescriptions = async (userID: number) => {
   return await db.query.UsersTable.findFirst({
     where: eq(UsersTable.user_id, userID),
@@ -84,11 +90,7 @@ export const getUserWithPrescriptions = async (userID: number) => {
   });
 };
 
-
-
-
-// Fetches a user along with all their complaints.
-
+// Get a user with all their complaints
 export const getUserWithComplaints = async (userID: number) => {
   return await db.query.UsersTable.findFirst({
     where: eq(UsersTable.user_id, userID),
@@ -98,12 +100,7 @@ export const getUserWithComplaints = async (userID: number) => {
   });
 };
 
-
-
-
-//Fetches all complaints in the system
-// user.service.ts
-
+// Fetch all complaints with full details
 export const getAllComplaintsWithDetails = async () => {
   return await db.query.ComplaintsTable.findMany({
     with: {
@@ -117,21 +114,16 @@ export const getAllComplaintsWithDetails = async () => {
   });
 };
 
-
-
-
-// Fetches a user along with all their payments
+// Get a user with all their payments
 export const getUserWithPayments = async (userID: number) => {
   return await db.query.UsersTable.findFirst({
     where: eq(UsersTable.user_id, userID),
     with: {
-  
       appointments: {
         with: {
           payments: true
         }
       }
-    },
+    }
   });
 };
-

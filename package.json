@@ -55,7 +55,9 @@
     "breakpoint:Doctors": "k6 run Load-tests/breakpoint/doctors.get.breakpoint.ts",
     "breakpoint:Appointments": "k6 run Load-tests/breakpoint/appointment.get.breakpoint.ts",
     "breakpoint:Complaints": "k6 run Load-tests/breakpoint/complaint.get.breakpoint.ts",
+
     "breakpoint:Prescriptions": "k6 run Load-tests/breakpoint/prescription.get.breakpoint.ts",
+    
     "breakpoint:Users": "k6 run Load-tests/breakpoint/users.get.breakpoint.ts",
     "breakpoint:Payments": "k6 run Load-tests/breakpoint/payments.get.breakpoint.ts",
     "push": "drizzle-kit push",
