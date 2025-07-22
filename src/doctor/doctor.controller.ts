@@ -15,8 +15,11 @@ import {
 export const createDoctorController = async (req: Request, res: Response) => {
   try {
     const doctor = req.body;
-    const result = await createDoctorService(doctor);
-    return res.status(201).json({ message: result });
+    if(!doctor.user_id) {
+      return res.status(400).json({ message: "User ID is required to create a doctor" });
+    }
+    const createdDoctor = await createDoctorService(doctor);
+    return res.status(201).json({ message: "Doctor created successfully", data: createdDoctor });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }

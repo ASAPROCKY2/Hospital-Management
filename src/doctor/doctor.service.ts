@@ -6,8 +6,8 @@ import { TIDoctor, DoctorsTable } from "../Drizzle/schema";
 
 // Create a new doctor
 export const createDoctorService = async (doctor: TIDoctor) => {
-  await db.insert(DoctorsTable).values(doctor);
-  return "Doctor created successfully";
+const[newDoctor]=await db.insert(DoctorsTable).values(doctor).returning();
+  return newDoctor;
 };
 
 // Get all doctors

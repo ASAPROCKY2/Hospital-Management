@@ -20,14 +20,16 @@ async function seed() {
     { firstname: "Joy", lastname: "Wanjiru", email: "joy.wanjiru@example.com", password: "hashed999", contact_phone: "0756789012", address: "Thika Road", role: "admin" },
   ]);
 
-  // Insert doctors
-  await db.insert(DoctorsTable).values([
-    { first_name: "Michael", last_name: "Njoroge", specialization: "General Medicine", contact_phone: "0701002001", available_days: "Mon,Tue,Wed" },
-    { first_name: "Grace", last_name: "Mwende", specialization: "Pediatrics", contact_phone: "0701002002", available_days: "Tue,Thu,Fri" },
-    { first_name: "James", last_name: "Ouma", specialization: "Dermatology", contact_phone: "0701002003", available_days: "Mon,Fri" },
-    { first_name: "Susan", last_name: "Kariuki", specialization: "Cardiology", contact_phone: "0701002004", available_days: "Wed,Thu" },
-    { first_name: "Peter", last_name: "Mulei", specialization: "Orthopedics", contact_phone: "0701002005", available_days: "Mon,Tue,Thu" },
-  ]);
+await db.insert(DoctorsTable).values([
+  { user_id: 1, first_name: "Michael", last_name: "Njoroge", specialization: "General Medicine", contact_phone: "0701002001", available_days: "Mon,Tue,Wed" },
+  { user_id: 2, first_name: "Grace", last_name: "Mwende", specialization: "Pediatrics", contact_phone: "0701002002", available_days: "Tue,Thu,Fri" },
+  { user_id: 3, first_name: "James", last_name: "Ouma", specialization: "Dermatology", contact_phone: "0701002003", available_days: "Mon,Fri" },
+  { user_id: 4, first_name: "Susan", last_name: "Kariuki", specialization: "Cardiology", contact_phone: "0701002004", available_days: "Wed,Thu" },
+  { user_id: 5, first_name: "Peter", last_name: "Mulei", specialization: "Orthopedics", contact_phone: "0701002005", available_days: "Mon,Tue,Thu" },
+]);
+
+
+
 
   // Insert appointments
   await db.insert(AppointmentsTable).values([
@@ -62,7 +64,7 @@ async function seed() {
     payment_status: "pending",
     transaction_id: "TXN002",
     payment_date: "2025-07-06",
-  },
+  },   
   {
     appointment_id: 3,
     amount: "1800.00",

@@ -48,7 +48,7 @@ export const UsersTable = pgTable("users", {
   role: roleEnum("role").default("user"),
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").defaultNow(),
-  // image_url: varchar("image_url", { length: 255 }).default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"),
+  image_url: varchar("image_url", { length: 255 }).default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"),
 });
 
 // Doctors Table
@@ -61,6 +61,9 @@ export const DoctorsTable = pgTable("doctors", {
   available_days: text("available_days"),
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").defaultNow(),
+   user_id: integer("user_id")
+    .notNull()
+    .references(() => UsersTable.user_id, { onDelete: "cascade" }),
 });
 
 // Appointments Table

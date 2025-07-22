@@ -11,25 +11,25 @@ import {
 import { eq } from "drizzle-orm";
 
 export const getDashboardStatsService = async () => {
-  // ✅ Count patients (users with role = "user")
+  //  Count patients (users with role = "user")
   const patients = await db.query.UsersTable.findMany({
     where: eq(UsersTable.role, "user"),
   });
 
-  // ✅ Count doctors
+  //  Count doctors
   const doctors = await db.query.DoctorsTable.findMany();
 
-  // ✅ Count appointments
+  //  Count appointments
   const appointments = await db.query.AppointmentsTable.findMany();
 
-  // ✅ Sum up all payments
+  //  Sum up all payments
   const payments = await db.query.PaymentsTable.findMany();
   const revenue = payments.reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
 
-  // ✅ Count complaints
+  //  Count complaints
   const complaints = await db.query.ComplaintsTable.findMany();
 
-  // ✅ Count prescriptions
+  //  Count prescriptions
   const prescriptions = await db.query.PrescriptionsTable.findMany();
 
   // Return all stats

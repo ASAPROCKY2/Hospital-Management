@@ -19,45 +19,32 @@
     "smoke:Payments": "k6 run Load-tests/smoke/payments.get.smoke.ts",
     "smoke:Complaints": "k6 run Load-tests/smoke/complaints.get.smoke.ts",
     "smoke:Prescriptions": "k6 run Load-tests/smoke/prescription.get.smoke.ts",
-    
     "load:Doctors": "k6 run Load-tests/load/doctors.get.load.ts",
-
     "load:Appointments": "k6 run Load-tests/load/appointment.get.load.ts",
-
     "load:Complaints": "k6 run Load-tests/load/complaint.get.load.ts",
     "load:Prescriptions": "k6 run Load-tests/load/prescriptions.get.load.ts",
     "load:Users": "k6 run Load-tests/load/users.get.load.ts",
     "load:Payments": "k6 run Load-tests/load/payments.get.load.ts",
-    
     "stress:Appointments": "k6 run Load-tests/stress/appointment.get.stress.ts",
     "stress:Doctors": "k6 run Load-tests/stress/doctors.get.stress.ts",
     "stress:Users": "k6 run Load-tests/stress/users.get.stress.ts",
-
-    "stress:Complaints" : "k6 run Load-tests/stress/complaint.get.stress.ts",
-
-   
+    "stress:Complaints": "k6 run Load-tests/stress/complaint.get.stress.ts",
     "stress:Payments": "k6 run Load-tests/stress/payment.get.stress.ts",
-    
     "spike:Doctors": "k6 run Load-tests/spike/doctors.get.spike.ts",
     "spike:Appointments": "k6 run Load-tests/spike/appointment.get.spike.ts",
     "spike:Complaints": "k6 run Load-tests/spike/complaint.get.spike.ts",
     "spike:Prescriptions": "k6 run Load-tests/spike/prescription.get.spike.ts",
-    
     "spike:Payments": "k6 run Load-tests/spike/payments.get.spike.ts",
-    
     "soak:Doctors": "k6 run Load-tests/soak/doctors.get.soak.ts",
     "soak:Appointments": "k6 run Load-tests/soak/appointment.get.soak.ts",
     "soak:Complaints": "k6 run Load-tests/soak/complaint.get.soak.ts",
     "soak:Users": "k6 run Load-tests/soak/users.get.soak.ts",
     "soak:Prescriptions": "k6 run Load-tests/soak/prescription.get.soak.ts",
     "soak:Payments": "k6 run Load-tests/soak/payment.get.soak.ts",
-    
     "breakpoint:Doctors": "k6 run Load-tests/breakpoint/doctors.get.breakpoint.ts",
     "breakpoint:Appointments": "k6 run Load-tests/breakpoint/appointment.get.breakpoint.ts",
     "breakpoint:Complaints": "k6 run Load-tests/breakpoint/complaint.get.breakpoint.ts",
-
     "breakpoint:Prescriptions": "k6 run Load-tests/breakpoint/prescription.get.breakpoint.ts",
-    
     "breakpoint:Users": "k6 run Load-tests/breakpoint/users.get.breakpoint.ts",
     "breakpoint:Payments": "k6 run Load-tests/breakpoint/payments.get.breakpoint.ts",
     "push": "drizzle-kit push",

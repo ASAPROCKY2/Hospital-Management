@@ -1,2 +1,0 @@
-ALTER TABLE "payments" ADD COLUMN "user_id" integer;--> statement-breakpoint
-ALTER TABLE "payments" ADD CONSTRAINT "payments_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE set null ON UPDATE no action;

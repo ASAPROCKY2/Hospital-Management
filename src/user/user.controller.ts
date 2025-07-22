@@ -12,14 +12,19 @@ import {
   getUserWithComplaints,
   getUserWithPayments,
   getAllComplaintsWithDetails,
-  updateUserService, // ✅ import the update service
+  updateUserService,
 } from "./user.service";
 
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { sendEmail } from "../Mailer/mailer";
 
-//  Register a new user
+
+import db from "../Drizzle/db";
+import { DoctorsTable } from "../Drizzle/schema";
+import { eq } from "drizzle-orm";
+
+
 export const createUserController = async (req: Request, res: Response) => {
   try {
     const {
@@ -33,7 +38,7 @@ export const createUserController = async (req: Request, res: Response) => {
     } = req.body;
 
     if (!role || !["doctor", "user"].includes(role)) {
-      return res.status(400).json({ message: "Invalid role. Must be doctor or patient." });
+      return res.status(400).json({ message: "Invalid role. Must be doctor or user." });
     }
 
     const existingUser = await getUserByEmailService(email);
@@ -74,12 +79,12 @@ export const createUserController = async (req: Request, res: Response) => {
   }
 };
 
-//  Login
+
 export const userLoginController = async (req: Request, res: Response) => {
   try {
     const user = req.body;
-    const existingUser = await userLoginService(user);
 
+    const existingUser = await userLoginService(user);
     if (!existingUser) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -89,25 +94,28 @@ export const userLoginController = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+
     const payload = {
       user_id: existingUser.user_id,
+      doctor_id: existingUser.doctor_id?? null,
+      firstname: existingUser.firstname,
+      lastname: existingUser.lastname,
+      contact_phone: existingUser.contact_phone,
+      address: existingUser.address,
       email: existingUser.email,
       role: existingUser.role,
       exp: Math.floor(Date.now() / 1000) + 60 * 60,
     };
-
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error("JWT_SECRET is not defined in your environment variables.");
+    }
     const token = jwt.sign(payload, process.env.JWT_SECRET as string);
 
     return res.status(200).json({
       message: "Login successful",
       token,
-      user: {
-        user_id: existingUser.user_id,
-        firstname: existingUser.firstname,
-        lastname: existingUser.lastname,
-        email: existingUser.email,
-        role: existingUser.role,
-      },
+      user:payload,
     });
   } catch (error: any) {
     console.error("Error in userLoginController:", error);
@@ -115,7 +123,6 @@ export const userLoginController = async (req: Request, res: Response) => {
   }
 };
 
-//  Verify user
 export const verifyUserController = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
@@ -127,7 +134,6 @@ export const verifyUserController = async (req: Request, res: Response) => {
   }
 };
 
-//  Get all users
 export const getUsersController = async (_req: Request, res: Response) => {
   try {
     const users = await getUsersService();
@@ -138,7 +144,6 @@ export const getUsersController = async (_req: Request, res: Response) => {
   }
 };
 
-//  Get user by ID
 export const getUserByIdController = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
@@ -154,7 +159,6 @@ export const getUserByIdController = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ Update user
 export const updateUserController = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
@@ -163,8 +167,6 @@ export const updateUserController = async (req: Request, res: Response) => {
     }
 
     const updates = req.body;
-
-    // If password is being updated, hash it
     if (updates.password) {
       updates.password = await bcrypt.hash(updates.password, 10);
     }
@@ -177,7 +179,6 @@ export const updateUserController = async (req: Request, res: Response) => {
   }
 };
 
-//  Delete user
 export const deleteUserByIdController = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
@@ -191,7 +192,6 @@ export const deleteUserByIdController = async (req: Request, res: Response) => {
   }
 };
 
-//  Get user with appointments
 export const getUserWithAppointmentsController = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
@@ -204,7 +204,6 @@ export const getUserWithAppointmentsController = async (req: Request, res: Respo
   }
 };
 
-//  Get user with prescriptions
 export const getUserWithPrescriptionsController = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
@@ -217,7 +216,6 @@ export const getUserWithPrescriptionsController = async (req: Request, res: Resp
   }
 };
 
-//  Get user with complaints
 export const getUserWithComplaintsController = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
@@ -230,7 +228,6 @@ export const getUserWithComplaintsController = async (req: Request, res: Respons
   }
 };
 
-//  Get user with payments
 export const getUserWithPaymentsController = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
@@ -243,7 +240,6 @@ export const getUserWithPaymentsController = async (req: Request, res: Response)
   }
 };
 
-//  Admin: Get all complaints with full details
 export const getAllComplaintsWithDetailsController = async (_req: Request, res: Response) => {
   try {
     const complaints = await getAllComplaintsWithDetails();
