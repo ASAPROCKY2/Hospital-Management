@@ -1,3 +1,4 @@
+// src/user/user.controller.ts
 import { Request, Response } from "express";
 import {
   createUserService,
@@ -19,12 +20,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { sendEmail } from "../Mailer/mailer";
 
-
-import db from "../Drizzle/db";
-import { DoctorsTable } from "../Drizzle/schema";
-import { eq } from "drizzle-orm";
-
-
+// Create user
 export const createUserController = async (req: Request, res: Response) => {
   try {
     const {
@@ -35,6 +31,7 @@ export const createUserController = async (req: Request, res: Response) => {
       contactPhone,
       address,
       role,
+      imageUrl, // handle image URL
     } = req.body;
 
     if (!role || !["doctor", "user"].includes(role)) {
@@ -59,6 +56,7 @@ export const createUserController = async (req: Request, res: Response) => {
       contact_phone: contactPhone,
       address,
       role,
+      image_url: imageUrl || null, // store image URL in db field
     };
 
     await createUserService(userToCreate);
@@ -79,50 +77,48 @@ export const createUserController = async (req: Request, res: Response) => {
   }
 };
 
-
+// Login user
 export const userLoginController = async (req: Request, res: Response) => {
   try {
-    const user = req.body;
+    const credentials = req.body;
+    const existingUser = await userLoginService(credentials);
 
-    const existingUser = await userLoginService(user);
     if (!existingUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const match = await bcrypt.compare(user.password, existingUser.password);
+    const match = await bcrypt.compare(credentials.password, existingUser.password);
     if (!match) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-
     const payload = {
       user_id: existingUser.user_id,
-      doctor_id: existingUser.doctor_id?? null,
+      doctor_id: existingUser.doctor_id ?? null,
       firstname: existingUser.firstname,
       lastname: existingUser.lastname,
       contact_phone: existingUser.contact_phone,
       address: existingUser.address,
       email: existingUser.email,
       role: existingUser.role,
+      image_url: existingUser.image_url || null,
       exp: Math.floor(Date.now() / 1000) + 60 * 60,
     };
+
     const secret = process.env.JWT_SECRET;
     if (!secret) {
       throw new Error("JWT_SECRET is not defined in your environment variables.");
     }
-    const token = jwt.sign(payload, process.env.JWT_SECRET as string);
 
-    return res.status(200).json({
-      message: "Login successful",
-      token,
-      user:payload,
-    });
+    const token = jwt.sign(payload, secret);
+    return res.status(200).json({ message: "Login successful", token, user: payload });
   } catch (error: any) {
     console.error("Error in userLoginController:", error);
     return res.status(500).json({ error: error.message });
   }
 };
 
+// Verify user
 export const verifyUserController = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
@@ -134,6 +130,7 @@ export const verifyUserController = async (req: Request, res: Response) => {
   }
 };
 
+// Get all users
 export const getUsersController = async (_req: Request, res: Response) => {
   try {
     const users = await getUsersService();
@@ -144,6 +141,7 @@ export const getUsersController = async (_req: Request, res: Response) => {
   }
 };
 
+// Get user by ID
 export const getUserByIdController = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
@@ -159,16 +157,22 @@ export const getUserByIdController = async (req: Request, res: Response) => {
   }
 };
 
+// Update user (supports image_url)
 export const updateUserController = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
-    if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid user ID" });
-    }
+    if (isNaN(id)) return res.status(400).json({ message: "Invalid user ID" });
 
-    const updates = req.body;
+    const updates: any = { ...req.body };
+
     if (updates.password) {
       updates.password = await bcrypt.hash(updates.password, 10);
+    }
+
+    // if imageUrl is passed, map to image_url
+    if (updates.imageUrl) {
+      updates.image_url = updates.imageUrl;
+      delete updates.imageUrl;
     }
 
     await updateUserService(id, updates);
@@ -179,6 +183,7 @@ export const updateUserController = async (req: Request, res: Response) => {
   }
 };
 
+// Delete user
 export const deleteUserByIdController = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
@@ -192,6 +197,7 @@ export const deleteUserByIdController = async (req: Request, res: Response) => {
   }
 };
 
+// Relationships
 export const getUserWithAppointmentsController = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);

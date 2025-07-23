@@ -23,11 +23,12 @@ export const verifyUserService = async (email: string) => {
     .where(sql`${UsersTable.email} = ${email}`);
 };
 
-//  Login a user (fixed signature)
-export const userLoginService = async (user:TSUser) => {
+//  Login a user (now includes image_url)
+export const userLoginService = async (user: TSUser) => {
   const { email } = user;
+
   const userExist = await db.query.UsersTable.findFirst({
-     columns: {
+    columns: {
       user_id: true,
       firstname: true,
       lastname: true,
@@ -36,24 +37,28 @@ export const userLoginService = async (user:TSUser) => {
       contact_phone: true,
       address: true,
       role: true,
+      image_url: true, 
     },
     where: sql`${UsersTable.email} = ${email}`,
   });
+
   if (!userExist) {
     throw new Error("User not found");
   }
-  let doctor_id:number | undefined = undefined;
+
+  let doctor_id: number | undefined = undefined;
   if (userExist.role === "doctor") {
     const doctor = await db.query.DoctorsTable.findFirst({
-      columns:{
-        doctor_id:true,
+      columns: {
+        doctor_id: true,
       },
       where: sql`${DoctorsTable.user_id} = ${userExist.user_id}`,
     });
 
     doctor_id = doctor?.doctor_id;
   }
-  return {...userExist, doctor_id }; 
+
+  return { ...userExist, doctor_id };
 };
 
 //  Get all users
