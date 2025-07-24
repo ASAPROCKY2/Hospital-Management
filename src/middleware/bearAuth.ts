@@ -24,7 +24,7 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction)
 
 // Updated middleware to check user role, now includes "doctor"
 export const checkRoles = (
-    requiredRole: "admin" | "patient" | "doctor" | "both"
+    requiredRole: "admin" | "user" | "doctor" | "both"
 ) => {
     return (req: Request, res: Response, next: NextFunction): void => {
         const authHeader = req.headers.authorization;
@@ -48,7 +48,7 @@ export const checkRoles = (
                 const role = (decoded as any).role;
 
                 if (requiredRole === "both") {
-                    if (["admin", "patient", "doctor"].includes(role)) {
+                    if (["admin", "user", "doctor"].includes(role)) {
                         next();
                         return;
                     }
@@ -71,6 +71,6 @@ export const checkRoles = (
 
 // Role-specific exports
 export const adminRoleAuth = checkRoles("admin");
-export const patientRoleAuth = checkRoles("patient");
+export const patientRoleAuth = checkRoles("user");
 export const doctorRoleAuth = checkRoles("doctor");
 export const bothRoleAuth = checkRoles("both");
