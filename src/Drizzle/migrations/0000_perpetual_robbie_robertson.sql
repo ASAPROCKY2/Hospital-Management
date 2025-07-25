@@ -35,7 +35,8 @@ CREATE TABLE "doctors" (
 	"available_days" text,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
-	"user_id" integer NOT NULL
+	"user_id" integer NOT NULL,
+	"image_url" varchar(255) DEFAULT 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'
 );
 --> statement-breakpoint
 CREATE TABLE "payments" (

@@ -1,6 +1,5 @@
 // src/doctor/doctor.router.ts
-
-import { Express } from "express";
+import { Express, Request, Response, NextFunction } from "express";
 import {
   createDoctorController,
   getAllDoctorsController,
@@ -12,65 +11,71 @@ import {
 } from "./doctor.controller";
 
 const DoctorRoutes = (app: Express) => {
-  // Create a new doctor
-  app.route("/doctor").post(async (req, res, next) => {
+
+  app.post("/doctor", async (req: Request, res: Response, next: NextFunction) => {
     try {
       await createDoctorController(req, res);
     } catch (error) {
+      console.error("Error in POST /doctor:", error);
       next(error);
     }
   });
 
-  // Get all doctors
-  app.route("/doctor").get(async (req, res, next) => {
+ 
+  app.get("/doctor", async (req: Request, res: Response, next: NextFunction) => {
     try {
       await getAllDoctorsController(req, res);
     } catch (error) {
+      console.error("Error in GET /doctor:", error);
       next(error);
     }
   });
 
-  // Get doctor by ID
-  app.route("/doctor/:id").get(async (req, res, next) => {
+  app.get("/doctor/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
       await getDoctorByIdController(req, res);
     } catch (error) {
+      console.error(`Error in GET /doctor/${req.params.id}:`, error);
       next(error);
     }
   });
 
-  // Update doctor by ID
-  app.route("/doctor/:id").put(async (req, res, next) => {
+ 
+  app.put("/doctor/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
       await updateDoctorController(req, res);
     } catch (error) {
+      console.error(`Error in PUT /doctor/${req.params.id}:`, error);
       next(error);
     }
   });
 
-  // Delete doctor by ID
-  app.route("/doctor/:id").delete(async (req, res, next) => {
+  
+  app.delete("/doctor/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
       await deleteDoctorController(req, res);
     } catch (error) {
+      console.error(`Error in DELETE /doctor/${req.params.id}:`, error);
       next(error);
     }
   });
 
-  // Get doctor with appointments, patients, prescriptions, and payments
-  app.route("/doctor/appointments/:id").get(async (req, res, next) => {
+  
+  app.get("/doctor/appointments/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
       await getDoctorWithAppointmentsController(req, res);
     } catch (error) {
+      console.error(`Error in GET /doctor/appointments/${req.params.id}:`, error);
       next(error);
     }
   });
 
-  // Get doctor with prescriptions and linked appointments
-  app.route("/doctor/prescriptions/:id").get(async (req, res, next) => {
+  
+  app.get("/doctor/prescriptions/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
       await getDoctorWithPrescriptionsController(req, res);
     } catch (error) {
+      console.error(`Error in GET /doctor/prescriptions/${req.params.id}:`, error);
       next(error);
     }
   });

@@ -1,5 +1,5 @@
 {
-  "id": "06b4a731-32b5-4bbe-a6d8-2517e4511019",
+  "id": "34502f84-9902-46ea-b5ce-8ba25953f055",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -272,6 +272,13 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true
+        },
+        "image_url": {
+          "name": "image_url",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'"
         }
       },
       "indexes": {},

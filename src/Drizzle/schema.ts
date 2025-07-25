@@ -64,6 +64,9 @@ export const DoctorsTable = pgTable("doctors", {
    user_id: integer("user_id")
     .notNull()
     .references(() => UsersTable.user_id, { onDelete: "cascade" }),
+    image_url: varchar("image_url", { length: 255 }).default(
+    "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y",
+  ),
 });
 
 // Appointments Table
