@@ -89,7 +89,7 @@ const DashboardRoutes = (app: Express) => {
     }
   );
 
-  // ✅ Combined analytics (fetch all analytics in one request)
+  //  Combined analytics (fetch all analytics in one request)
   app.get(
     "/admin/analytics",
     async (req: Request, res: Response, next: NextFunction) => {
