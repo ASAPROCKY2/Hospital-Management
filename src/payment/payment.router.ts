@@ -7,7 +7,8 @@ import {
   deletePaymentController,
   getPaymentsByAppointmentController,
   getFullPaymentDetailsController,
-  initiatePaymentController
+  initiatePaymentController,
+  handlePaymentCallbackController, // ✅ added
 } from "./payment.controller";
 
 import {
@@ -110,11 +111,21 @@ const PaymentRoutes = (app: Express) => {
 
   // ✅ Initiate M-Pesa STK Push (patient or admin can trigger)
   app.route("/payments/initiate").post(
-    isAuthenticated,
-    bothRoleAuth, // allow both patients and admins
+   
     async (req, res, next) => {
       try {
         await initiatePaymentController(req, res);
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+
+  // ✅ Handle M-Pesa payment callback (no auth, Safaricom server posts here)
+  app.route("/payments/payment-callback/:appointmentId").post(
+    async (req, res, next) => {
+      try {
+        await handlePaymentCallbackController(req, res);
       } catch (error) {
         next(error);
       }

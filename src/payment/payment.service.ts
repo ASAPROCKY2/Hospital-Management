@@ -2,19 +2,18 @@ import db from "../Drizzle/db";
 import { PaymentsTable } from "../Drizzle/schema";
 import { InferInsertModel, eq } from "drizzle-orm";
 
-// ✅ Get proper type for inserts
 type NewPayment = InferInsertModel<typeof PaymentsTable>;
 
 /* -----------------------------------------------------------
    🔹 CRUD Services
 ----------------------------------------------------------- */
 
-// Create a new payment record manually
+// ✅ Create a new payment record manually
 export async function createPaymentService(data: NewPayment) {
   const [inserted] = await db.insert(PaymentsTable).values({
     appointment_id: data.appointment_id,
     user_id: data.user_id ?? null,
-    amount: data.amount, // must be string for decimal
+    amount: data.amount, // stored as string for decimal
     payment_status: data.payment_status ?? "pending",
     transaction_id: data.transaction_id ?? null,
     payment_date: data.payment_date ?? null,
@@ -24,19 +23,19 @@ export async function createPaymentService(data: NewPayment) {
   return inserted;
 }
 
-// Fetch all payments
+// ✅ Fetch all payments
 export async function getAllPaymentsService() {
   return await db.select().from(PaymentsTable);
 }
 
-// Fetch one payment by id
+// ✅ Fetch one payment by id
 export async function getPaymentByIdService(paymentId: number) {
   const rows = await db.select().from(PaymentsTable)
     .where(eq(PaymentsTable.payment_id, paymentId));
   return rows[0] ?? null;
 }
 
-// Update payment by id
+// ✅ Update payment by id
 export async function updatePaymentService(paymentId: number, updates: Partial<NewPayment>) {
   const [updated] = await db.update(PaymentsTable)
     .set({ ...updates, updated_at: new Date() })
@@ -45,19 +44,19 @@ export async function updatePaymentService(paymentId: number, updates: Partial<N
   return updated;
 }
 
-// Delete payment by id
+// ✅ Delete payment by id
 export async function deletePaymentService(paymentId: number) {
   await db.delete(PaymentsTable).where(eq(PaymentsTable.payment_id, paymentId));
   return { message: "Payment deleted" };
 }
 
-// Get all payments for a specific appointment
+// ✅ Get all payments for a specific appointment
 export async function getPaymentsByAppointmentService(appointmentId: number) {
   return await db.select().from(PaymentsTable)
     .where(eq(PaymentsTable.appointment_id, appointmentId));
 }
 
-// Get full details for a payment (can be extended with joins)
+// ✅ Get full details for a payment
 export async function getFullPaymentDetailsService(paymentId: number) {
   const rows = await db.select().from(PaymentsTable)
     .where(eq(PaymentsTable.payment_id, paymentId));
@@ -110,7 +109,7 @@ async function getAccessToken(): Promise<string> {
   return data.access_token;
 }
 
-// Save initial payment record
+// Save initial payment record (pending)
 async function savePendingPayment(
   appointmentId: number,
   userId: number | null,
@@ -128,7 +127,7 @@ async function savePendingPayment(
   });
 }
 
-// Initiate STK push
+// ✅ Initiate STK push
 export async function initiatePaymentService(
   appointmentId: number,
   userId: number | null,
@@ -148,7 +147,8 @@ export async function initiatePaymentService(
     PartyA: phoneNumber,
     PartyB: shortcode,
     PhoneNumber: phoneNumber,
-    CallBackURL: `${baseUrl}/payment-callback/${appointmentId}`,
+    // 🔧 FIXED: include /payments/ in callback path
+    CallBackURL: `${baseUrl}/payments/payment-callback/${appointmentId}`,
     AccountReference: `APPT-${appointmentId}`,
     TransactionDesc: "Appointment Payment",
   };
@@ -165,14 +165,20 @@ export async function initiatePaymentService(
     }
   );
 
+  const rawText = await res.text();
+  console.log("🔎 Safaricom raw response:", rawText);
+
   if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`STK push failed: ${res.status} - ${errorText}`);
+    throw new Error(`STK push failed: ${res.status} - ${rawText}`);
   }
 
-  const data = await res.json();
+  let data: any;
+  try {
+    data = JSON.parse(rawText);
+  } catch (e) {
+    throw new Error(`Failed to parse Safaricom JSON: ${e} | Body: ${rawText}`);
+  }
 
-  // save payment record
   await savePendingPayment(appointmentId, userId, amount.toFixed(2), data.CheckoutRequestID);
 
   return {
@@ -181,4 +187,49 @@ export async function initiatePaymentService(
     CheckoutRequestID: data.CheckoutRequestID,
     CustomerMessage: data.CustomerMessage,
   };
+}
+
+/* -----------------------------------------------------------
+   🔹 Payment Callback Handling
+----------------------------------------------------------- */
+
+export async function handlePaymentCallbackService(body: any) {
+  const callback = body?.Body?.stkCallback;
+  if (!callback) {
+    throw new Error("Invalid callback payload");
+  }
+
+  const resultCode = callback.ResultCode;
+  const checkoutRequestID = callback.CheckoutRequestID;
+
+  if (resultCode === 0) {
+    // Payment success
+    const metadata = callback.CallbackMetadata?.Item || [];
+    const receipt = metadata.find((i: any) => i.Name === "MpesaReceiptNumber")?.Value || null;
+    const amount = metadata.find((i: any) => i.Name === "Amount")?.Value || null;
+
+    const paymentDate = new Date().toISOString().split("T")[0];
+
+    await db.update(PaymentsTable)
+      .set({
+        payment_status: "paid",
+        transaction_id: receipt,
+        amount: amount ? amount.toString() : null,
+        payment_date: paymentDate,
+        updated_at: new Date(),
+      })
+      .where(eq(PaymentsTable.transaction_id, checkoutRequestID));
+
+    return { status: "paid", receipt };
+  } else {
+    // Payment failed or cancelled
+    await db.update(PaymentsTable)
+      .set({
+        payment_status: "failed",
+        updated_at: new Date(),
+      })
+      .where(eq(PaymentsTable.transaction_id, checkoutRequestID));
+
+    return { status: "failed", checkoutRequestID };
+  }
 }

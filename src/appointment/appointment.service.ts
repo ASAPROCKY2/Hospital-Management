@@ -20,12 +20,9 @@ export const getAllAppointmentsService = async () => {
   });
 
   return rows.map((appt) => {
-    // doctor might be null if not found
     const doctorName = appt.doctor
       ? `Dr. ${appt.doctor.first_name} ${appt.doctor.last_name}`
       : null;
-
-    // patient might be null if not found
     const patientName = appt.user
       ? `${appt.user.firstname} ${appt.user.lastname}`
       : null;
@@ -65,7 +62,6 @@ export const getAppointmentByIdService = async (id: number) => {
   const doctorName = appt.doctor
     ? `Dr. ${appt.doctor.first_name} ${appt.doctor.last_name}`
     : null;
-
   const patientName = appt.user
     ? `${appt.user.firstname} ${appt.user.lastname}`
     : null;
@@ -119,6 +115,7 @@ export const getAppointmentsByDoctorService = async (doctorID: number) => {
     appointment_id: appt.appointment_id,
     appointment_date: appt.appointment_date,
     time_slot: appt.time_slot,
+    total_amount: appt.total_amount, // ✅ include total_amount here too
     appointment_status: appt.appointment_status,
     doctor_id: appt.doctor_id,
     doctor_name: appt.doctor
@@ -145,6 +142,7 @@ export const getAppointmentsByUserService = async (userID: number) => {
     appointment_id: appt.appointment_id,
     appointment_date: appt.appointment_date,
     time_slot: appt.time_slot,
+    total_amount: appt.total_amount, // ✅ this was missing before
     appointment_status: appt.appointment_status,
     doctor_id: appt.doctor_id,
     doctor_name: appt.doctor

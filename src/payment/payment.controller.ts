@@ -7,8 +7,13 @@ import {
   deletePaymentService,
   getPaymentsByAppointmentService,
   getFullPaymentDetailsService,
-  initiatePaymentService
+  initiatePaymentService,
+  handlePaymentCallbackService
 } from "./payment.service";
+
+/* -----------------------------------------------------------
+   🔹 CRUD Controllers
+----------------------------------------------------------- */
 
 // ✅ Create a new payment manually
 export const createPaymentController = async (req: Request, res: Response) => {
@@ -96,6 +101,10 @@ export const getFullPaymentDetailsController = async (req: Request, res: Respons
   }
 };
 
+/* -----------------------------------------------------------
+   🔹 Mpesa STK Push + Callback
+----------------------------------------------------------- */
+
 // ✅ Initiate M-Pesa STK Push
 export const initiatePaymentController = async (req: Request, res: Response) => {
   try {
@@ -115,5 +124,16 @@ export const initiatePaymentController = async (req: Request, res: Response) => 
   } catch (error: any) {
     console.error("Initiate payment error:", error);
     res.status(500).json({ error: "Failed to initiate payment" });
+  }
+};
+
+// ✅ Handle M-Pesa Payment Callback
+export const handlePaymentCallbackController = async (req: Request, res: Response) => {
+  try {
+    const result = await handlePaymentCallbackService(req.body);
+    res.status(200).json(result);
+  } catch (error: any) {
+    console.error("Payment callback error:", error);
+    res.status(500).json({ error: "Failed to process callback" });
   }
 };
