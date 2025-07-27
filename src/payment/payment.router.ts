@@ -33,8 +33,7 @@ const PaymentRoutes = (app: Express) => {
 
   // ✅ Get all payments (admin only)
   app.route("/payments").get(
-    isAuthenticated,
-    adminRoleAuth,
+   
     async (req, res, next) => {
       try {
         await getAllPaymentsController(req, res);
@@ -46,8 +45,7 @@ const PaymentRoutes = (app: Express) => {
 
   // ✅ Get payment by ID (admin or patient)
   app.route("/payments/:id").get(
-    isAuthenticated,
-    bothRoleAuth,
+    
     async (req, res, next) => {
       try {
         await getPaymentByIdController(req, res);
@@ -85,8 +83,7 @@ const PaymentRoutes = (app: Express) => {
 
   // ✅ Get payments by appointment (admin or patient)
   app.route("/payments/appointment/:appointmentID").get(
-    isAuthenticated,
-    bothRoleAuth,
+   
     async (req, res, next) => {
       try {
         await getPaymentsByAppointmentController(req, res);
