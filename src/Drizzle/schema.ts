@@ -99,6 +99,7 @@ export const PaymentsTable = pgTable("payments", {
   appointment_id: integer("appointment_id").notNull().references(() => AppointmentsTable.appointment_id, { onDelete: "cascade" }),
   amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
   payment_status: paymentStatusEnum("payment_status").default("pending").notNull(),
+  checkout_request_id: varchar("checkout_request_id", { length: 100 }),
     
 user_id: integer("user_id") 
   .references(() => UsersTable.user_id, { onDelete: "set null" }),

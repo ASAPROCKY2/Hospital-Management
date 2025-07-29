@@ -1,5 +1,5 @@
 {
-  "id": "34502f84-9902-46ea-b5ce-8ba25953f055",
+  "id": "6cbde799-b3b7-4757-8c1d-7cc11555c905",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -332,6 +332,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'pending'"
+        },
+        "checkout_request_id": {
+          "name": "checkout_request_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
         },
         "user_id": {
           "name": "user_id",

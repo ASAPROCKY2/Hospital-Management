@@ -8,7 +8,7 @@ import {
   getPaymentsByAppointmentController,
   getFullPaymentDetailsController,
   initiatePaymentController,
-  handlePaymentCallbackController, // ✅ added
+  handlePaymentCallbackController,
 } from "./payment.controller";
 
 import {
@@ -18,8 +18,9 @@ import {
 } from "../middleware/bearAuth";
 
 const PaymentRoutes = (app: Express) => {
-  // ✅ Create a new payment (admin only in this example)
-  app.route("/payments").post(
+  // Create a payment
+  app.post(
+    "/payments",
     isAuthenticated,
     adminRoleAuth,
     async (req, res, next) => {
@@ -31,32 +32,27 @@ const PaymentRoutes = (app: Express) => {
     }
   );
 
-  // ✅ Get all payments (admin only)
-  app.route("/payments").get(
-   
-    async (req, res, next) => {
-      try {
-        await getAllPaymentsController(req, res);
-      } catch (error) {
-        next(error);
-      }
+  // Get all payments
+  app.get("/payments", async (req, res, next) => {
+    try {
+      await getAllPaymentsController(req, res);
+    } catch (error) {
+      next(error);
     }
-  );
+  });
 
-  // ✅ Get payment by ID (admin or patient)
-  app.route("/payments/:id").get(
-    
-    async (req, res, next) => {
-      try {
-        await getPaymentByIdController(req, res);
-      } catch (error) {
-        next(error);
-      }
+  // Get payment by ID
+  app.get("/payments/:id", async (req, res, next) => {
+    try {
+      await getPaymentByIdController(req, res);
+    } catch (error) {
+      next(error);
     }
-  );
+  });
 
-  // ✅ Update payment by ID (admin only)
-  app.route("/payments/:id").put(
+  // Update payment
+  app.put(
+    "/payments/:id",
     isAuthenticated,
     adminRoleAuth,
     async (req, res, next) => {
@@ -68,8 +64,9 @@ const PaymentRoutes = (app: Express) => {
     }
   );
 
-  // ✅ Delete payment by ID (admin only)
-  app.route("/payments/:id").delete(
+  // Delete payment
+  app.delete(
+    "/payments/:id",
     isAuthenticated,
     adminRoleAuth,
     async (req, res, next) => {
@@ -81,20 +78,18 @@ const PaymentRoutes = (app: Express) => {
     }
   );
 
-  // ✅ Get payments by appointment (admin or patient)
-  app.route("/payments/appointment/:appointmentID").get(
-   
-    async (req, res, next) => {
-      try {
-        await getPaymentsByAppointmentController(req, res);
-      } catch (error) {
-        next(error);
-      }
+  // Get payments by appointment
+  app.get("/payments/appointment/:appointmentID", async (req, res, next) => {
+    try {
+      await getPaymentsByAppointmentController(req, res);
+    } catch (error) {
+      next(error);
     }
-  );
+  });
 
-  // ✅ Get full payment details (admin only)
-  app.route("/payments/full/:id").get(
+  // Get full payment details (with joins)
+  app.get(
+    "/payments/full/:id",
     isAuthenticated,
     adminRoleAuth,
     async (req, res, next) => {
@@ -106,28 +101,23 @@ const PaymentRoutes = (app: Express) => {
     }
   );
 
-  // ✅ Initiate M-Pesa STK Push (patient or admin can trigger)
-  app.route("/payments/initiate").post(
-   
-    async (req, res, next) => {
-      try {
-        await initiatePaymentController(req, res);
-      } catch (error) {
-        next(error);
-      }
+  // Initiate STK push payment
+  app.post("/payments/initiate", async (req, res, next) => {
+    try {
+      await initiatePaymentController(req, res);
+    } catch (error) {
+      next(error);
     }
-  );
+  });
 
-  // ✅ Handle M-Pesa payment callback (no auth, Safaricom server posts here)
-  app.route("/payments/payment-callback/:appointmentId").post(
-    async (req, res, next) => {
-      try {
-        await handlePaymentCallbackController(req, res);
-      } catch (error) {
-        next(error);
-      }
+ 
+  app.post("/payments/payment-callback", async (req, res, next) => {
+    try {
+      await handlePaymentCallbackController(req, res);
+    } catch (error) {
+      next(error);
     }
-  );
+  });
 };
 
 export default PaymentRoutes;

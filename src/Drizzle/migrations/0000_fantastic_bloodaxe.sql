@@ -44,6 +44,7 @@ CREATE TABLE "payments" (
 	"appointment_id" integer NOT NULL,
 	"amount" numeric(10, 2) NOT NULL,
 	"payment_status" "payment_status" DEFAULT 'pending' NOT NULL,
+	"checkout_request_id" varchar(100),
 	"user_id" integer,
 	"transaction_id" varchar(100),
 	"payment_date" date,
