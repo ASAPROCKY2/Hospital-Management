@@ -1,9 +1,8 @@
 import db from "../Drizzle/db";
-import { PaymentsTable } from "../Drizzle/schema";
+import { PaymentsTable, AppointmentsTable } from "../Drizzle/schema"; // <-- Updated
 import { InferInsertModel, eq } from "drizzle-orm";
 
 // Types
-
 type NewPayment = InferInsertModel<typeof PaymentsTable>;
 
 /* -----------------------------------------------------------
@@ -194,7 +193,7 @@ export async function handlePaymentCallbackService(body: any) {
 
     console.log("M-Pesa payment success:", checkoutRequestID, "Receipt:", receipt);
 
-    const result = await db.update(PaymentsTable)
+    const [updatedPayment] = await db.update(PaymentsTable)
       .set({
         payment_status: "paid",
         transaction_id: receipt,
@@ -205,8 +204,19 @@ export async function handlePaymentCallbackService(body: any) {
       .where(eq(PaymentsTable.transaction_id, checkoutRequestID))
       .returning();
 
-    if (result.length === 0) {
+    if (!updatedPayment) {
       console.warn("No payment matched for update — possibly early callback");
+      return { status: "paid", receipt };
+    }
+
+   
+    if (updatedPayment.appointment_id) {
+      await db.update(AppointmentsTable)
+        .set({
+          appointment_status: "Confirmed",
+          updated_at: new Date(),
+        })
+        .where(eq(AppointmentsTable.appointment_id, updatedPayment.appointment_id));
     }
 
     return { status: "paid", receipt };

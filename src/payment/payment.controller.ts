@@ -1,4 +1,4 @@
-// src/payment/payment.controller.ts
+
 
 import { Request, Response } from "express";
 import {
@@ -14,7 +14,6 @@ import {
 } from "./payment.service";
 
 
-
 export const createPaymentController = async (req: Request, res: Response) => {
   try {
     const result = await createPaymentService(req.body);
@@ -25,6 +24,7 @@ export const createPaymentController = async (req: Request, res: Response) => {
   }
 };
 
+
 export const getAllPaymentsController = async (_req: Request, res: Response) => {
   try {
     const payments = await getAllPaymentsService();
@@ -34,6 +34,7 @@ export const getAllPaymentsController = async (_req: Request, res: Response) => 
     res.status(500).json({ error: "Failed to fetch payments" });
   }
 };
+
 
 export const getPaymentByIdController = async (req: Request, res: Response) => {
   try {
@@ -47,6 +48,7 @@ export const getPaymentByIdController = async (req: Request, res: Response) => {
   }
 };
 
+
 export const updatePaymentController = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
@@ -59,6 +61,7 @@ export const updatePaymentController = async (req: Request, res: Response) => {
   }
 };
 
+
 export const deletePaymentController = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
@@ -70,6 +73,7 @@ export const deletePaymentController = async (req: Request, res: Response) => {
   }
 };
 
+
 export const getPaymentsByAppointmentController = async (req: Request, res: Response) => {
   try {
     const appointmentID = Number(req.params.appointmentID);
@@ -80,6 +84,7 @@ export const getPaymentsByAppointmentController = async (req: Request, res: Resp
     res.status(500).json({ error: "Failed to fetch payments" });
   }
 };
+
 
 export const getFullPaymentDetailsController = async (req: Request, res: Response) => {
   try {
@@ -116,12 +121,11 @@ export const initiatePaymentController = async (req: Request, res: Response) => 
   }
 };
 
+
 export const handlePaymentCallbackController = async (req: Request, res: Response) => {
   try {
-    console.log(" M-Pesa Callback Received:", JSON.stringify(req.body, null, 2));
-
+    console.log("M-Pesa Callback Received:", JSON.stringify(req.body, null, 2));
     const result = await handlePaymentCallbackService(req.body);
-
     res.status(200).json(result);
   } catch (error) {
     console.error("Payment callback error:", error);

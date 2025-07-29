@@ -15,11 +15,11 @@ import {
 
 // Enums
 export const roleEnum = pgEnum("role", ["user", "admin", "doctor"]);
-//Defines the type of user in the system
+
 export const appointmentStatusEnum = pgEnum("appointment_status", ["Pending", "Confirmed", "Cancelled"]);
-//Defines the status of an appointment
+
 export const complaintStatusEnum = pgEnum("complaint_status", ["Open", "In Progress", "Resolved", "Closed"]);
-//Defines the status of a complaint
+
 export const paymentStatusEnum = pgEnum("payment_status", [
   "pending",
   "paid",
