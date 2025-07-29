@@ -9,7 +9,7 @@ export const options = {
         { duration: '10s', target: 100 },  // sudden spike to 100 users
         { duration: '20s', target: 100 },  // hold at 100 users
         { duration: '10s', target: 10 },   // sudden drop back to 10 users
-        { duration: '10s', target: 0 },    // ramp-down to 0
+        { duration: '10s', target: 0 },    
     ],
     ext: {
         loadimpact: {
