@@ -1,13 +1,10 @@
 import db from "../Drizzle/db";
-import { PaymentsTable, AppointmentsTable } from "../Drizzle/schema"; // <-- Updated
+import { PaymentsTable, AppointmentsTable } from "../Drizzle/schema";
 import { InferInsertModel, eq } from "drizzle-orm";
 
-// Types
+
 type NewPayment = InferInsertModel<typeof PaymentsTable>;
 
-/* -----------------------------------------------------------
-   🔹 CRUD Services
------------------------------------------------------------ */
 
 export async function createPaymentService(data: NewPayment) {
   const [inserted] = await db.insert(PaymentsTable).values({
@@ -57,9 +54,7 @@ export async function getFullPaymentDetailsService(paymentId: number) {
   return rows[0] ?? null;
 }
 
-/* -----------------------------------------------------------
-   🔹 M-PESA Integration
------------------------------------------------------------ */
+
 
 const consumerKey = process.env.MPESA_CONSUMER_KEY as string;
 const consumerSecret = process.env.MPESA_CONSUMER_SECRET as string;
