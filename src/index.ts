@@ -44,8 +44,9 @@ DoctorDashboardRoutes(app);
 app.get("/", (req, res) => {
   res.send("Hospital Management API is live");
 });
+const port = process.env.PORT;
 
 
-app.listen(8081, () => {
-  console.log("Server is running at http://localhost:8081");
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });
